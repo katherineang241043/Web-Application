@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         width: 28%;
         font-size: 18px;
         font-weight: 600;
-                color: #C08552;
+        color: #C08552;
     }
 
     .login_info input {
