@@ -144,11 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="login">
         <form target="_self" method="POST">
-            <div class="error">
-                <?php
-                echo $error_message;
-                ?>
-            </div>
+            <div class="error"><?php echo $error_message; ?></div>
             <div class="login_info">
                 <div>
                     <label>Username:</label><input type="text" name="username" value="<?php echo $keep_username; ?>">
