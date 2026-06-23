@@ -3,7 +3,6 @@ $servername = "localhost";
 $username = "katherine";
 $password = "20041126Ang";
 $dbname = "katherine";
-
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -13,20 +12,21 @@ if ($conn->connect_error) {
 }
 if (isset($_POST['email']) && isset($_POST['password'])) {
 
+session_start();
+
   $query = "SELECT * FROM student WHERE email='" . $_POST["email"] . "' && password='" . $_POST["password"] . "'";
   $result = mysqli_query($conn, $query) or die ("Couldn't execute query");
 
   $numrow = mysqli_num_rows($result);
 
   if ($numrow > 0) {
-    header("Locateion: booklist.php");
-    echo "Login success";
+    $_SESSION['email'] = $_POST['email'];
+    header('Location: booklist.php');
   } else {
     echo "No user found";
   }
 }
 ?>
-
 
 
 <!DOCTYPE html>
@@ -58,7 +58,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
       <br />
       <h2>Password</h2>
       <input type="password" name="password">
-      <input type="submit">
+      <input type="submit" value="Login">
     </form>
   </div>
 </body>

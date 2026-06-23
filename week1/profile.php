@@ -3,7 +3,7 @@ $servername = "localhost";
 $username = "katherine";
 $password = "20041126Ang";
 $dbname = "katherine";
-
+session_start();
 $conn = new mysqli($servername, $username, $password, $dbname);
 ?>
 
@@ -34,17 +34,19 @@ $conn = new mysqli($servername, $username, $password, $dbname);
         </tr>
         <?php
 
-        $query = "SELECT * FROM student";
+        $query = "SELECT * FROM student WHERE email='" . $_SESSION['email'] . "'";
 
-        $result = mysqli_query($conn, $query);
+        $result = mysqli_query($conn, $query) or die ("Couldn't execute query");
 
         while ($row = mysqli_fetch_assoc($result)) {
         ?>
             <tr>
-                <td><?php echo $row['name']; ?></td>
-                <td><?php echo $row['email']; ?></td>
-                <td><?php echo $row['yearjoin']; ?></td>
-                <td><input type="button" value="Edit"></td>
+                <form action="editprofile.php" method="POST">
+                    <td><?php echo $row['name']; ?></td>
+                    <td><?php echo $row['email']; ?></td>
+                    <td><?php echo $row['yearjoin']; ?></td>
+                    <td><input type="submit" value="Edit"></td>
+                </form>
             </tr>
         <?php
         }
