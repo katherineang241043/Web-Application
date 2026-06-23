@@ -5,7 +5,7 @@ $password = "katshop_123";
 $dbname = "katshop";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -86,13 +86,13 @@ if ($conn->connect_error) {
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
 
-            <div class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</div>
+            <div class="sidebar_menu" href=""><i class="fa-solid fa-border-all"></i>Dashboard</div>
 
-            <div class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</div>
+            <div class="sidebar_menu" href="customer.php"><i class="fa-solid fa-user"></i>Customers</div>
 
-            <div class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</div>
+            <div class="sidebar_menu" href=""><i class="fa-solid fa-cheese"></i>Products</div>
 
-            <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
+            <div class="sidebar_menu" href=""><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
 
         <section><h1>Welcome</h1></section>
