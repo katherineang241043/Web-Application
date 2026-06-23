@@ -88,7 +88,7 @@ if ($conn->connect_error) {
     }
 
     .main-content {
-        margin-left: 290px; /* 240px宽度 + 25px左边距 + 25px空隙 */
+        margin-left: 290px;
         padding: 40px;
     }
 

@@ -97,12 +97,12 @@
         width: 25%;
         font-size: 16px;
         font-weight: 600;
-        color: #C08552; /* 暖咖色标签文字 */
+        color: #C08552;
         text-align: left;
     }
 
     .form-group input {
-        background-color: #FFF8F0; /* 奶白色输入框 */
+        background-color: #FFF8F0;
         width: 75%;
         height: 42px;
         padding: 10px 15px;
@@ -114,12 +114,9 @@
     }
 
     .form-group input:focus {
-        outline: 2px solid #83dae7; /* 聚焦时淡淡的蓝边提示 */
+        outline: 2px solid #83dae7;
     }
 
-    /* ==========================================================================
-       按钮样式
-       ========================================================================== */
     .button-group {
         display: flex;
         justify-content: flex-end;
@@ -142,11 +139,10 @@
         justify-content: center;
     }
 
-    /* 提交按钮（奶白底，深咖字） */
     .btn-submit {
         background-color: #FFF8F0;
         color: #4B2E2B;
-        width: 40%; /* 让添加按钮宽一点，好看 */
+        width: 40%;
     }
 
     .btn-submit:hover {
@@ -154,7 +150,6 @@
         color: #FFF8F0;
     }
 
-    /* 返回按钮 */
     .btn-back {
         background-color: transparent;
         border: 2px solid #C08552;
