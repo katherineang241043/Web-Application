@@ -9,7 +9,6 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -54,14 +53,23 @@ if ($conn->connect_error) {
         position: fixed;
         top: 20px;
         left: 25px;
+        display: flex;
+        flex-direction: column; 
     }
+
 
     .sidebar_menu {
+        display: flex;         
+        align-items: center;   
         padding: 20px 28px;
+        text-decoration: none !important;
+        color: #FFF8F0;
     }
 
-    .sidebar_menu:hover{
+
+    .sidebar_menu:hover {
         color: #83dae7;
+        cursor: pointer; 
     }
 
     .sidebar_header {
@@ -70,7 +78,7 @@ if ($conn->connect_error) {
         text-align: center;
     }
 
-    .sidebar i{
+    .sidebar i {
         font-size: 20px;
         margin-right: 10px;
     }
@@ -78,7 +86,6 @@ if ($conn->connect_error) {
     section {
         padding: 30px;
     }
-
 </style>
 
 <body>
@@ -86,17 +93,16 @@ if ($conn->connect_error) {
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
 
-            <div class="sidebar_menu" href=""><i class="fa-solid fa-border-all"></i>Dashboard</div>
+            <div class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</div>
 
-            <div class="sidebar_menu" href="customer.php"><i class="fa-solid fa-user"></i>Customers</div>
+            <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
 
-            <div class="sidebar_menu" href=""><i class="fa-solid fa-cheese"></i>Products</div>
+            <div class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</div>
 
-            <div class="sidebar_menu" href=""><i class="fa-solid fa-door-open"></i>Sign Out</div>
+            <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
 
         <section><h1>Welcome</h1></section>
-
     </div>
 </body>
 
