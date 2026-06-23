@@ -1,12 +1,3 @@
-<?php
-$servername = "localhost";
-$username = "katherine";
-$password = "20041126Ang";
-$dbname = "katherine";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,14 +25,14 @@ $conn = new mysqli($servername, $username, $password, $dbname);
             <th>Price</th>
         </tr>
         <tr>
-            <from action="../web/runAddBook.php" method="GET">
+            <form action="insertbook.php" method="POST">
                 <td><input type=text name=ISBN></td>
                 <td><input type=text name=title></td>
                 <td><input type=text name=author></td>
                 <td><textarea cols='50' input type=text name=description></textarea></td>
                 <td><input type=text name=price></td>
-                <td><input type=submit value=add></td>
-            </from>
+                <td><input type=submit value="Add"></td>
+            </form>
         </tr>
     </table>
 </body>
