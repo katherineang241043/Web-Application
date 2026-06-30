@@ -35,7 +35,6 @@
         color: #FFF8F0;
         font-weight: 600;
         height: 94vh;
-        /* 这里删除了固定的 width，使其与 welcome.php 宽度完全一致 */
         padding: 10px;
         border-radius: 15px;
         text-align: left;

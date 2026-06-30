@@ -35,7 +35,6 @@
         color: #FFF8F0;
         font-weight: 600;
         height: 94vh;
-        /* 这里删除了固定的 width，使其与 welcome.php 宽度完全一致 */
         padding: 10px;
         border-radius: 15px;
         text-align: left;
@@ -81,7 +80,7 @@
 
     .form-container {
         background-color: #4B2E2B; 
-        max-width: 600px; /* 这里微调加了最大宽度，让 form 变窄更美观 */
+        max-width: 600px;
         padding: 40px;
         border-radius: 20px;
         box-shadow: 0 8px 16px rgba(0,0,0,0.1);

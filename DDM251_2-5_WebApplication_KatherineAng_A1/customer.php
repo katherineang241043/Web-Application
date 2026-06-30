@@ -99,7 +99,7 @@ if ($conn->connect_error) {
 
     table {
         width: 100%;
-        max-width: 1200px; /* 这里微调至 1200px 以留出空间容纳 Password 列 */
+        max-width: 1200px;
         border-collapse: collapse;
         background-color: #FFF8F0;
         border-radius: 10px;
