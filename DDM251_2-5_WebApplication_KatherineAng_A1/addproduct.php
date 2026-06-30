@@ -35,7 +35,7 @@
         color: #FFF8F0;
         font-weight: 600;
         height: 94vh;
-        width: 240px;
+        /* 这里删除了固定的 width，使其与 welcome.php 宽度完全一致 */
         padding: 10px;
         border-radius: 15px;
         text-align: left;
@@ -167,10 +167,14 @@
     <div class="max-width">
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
+
             <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
+
             <a href="products.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
-            <a href="logout.php" class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</a>
+
+            <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
 
         <div class="main-content">

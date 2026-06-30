@@ -99,7 +99,7 @@ if ($conn->connect_error) {
 
     table {
         width: 100%;
-        max-width: 1100px;
+        max-width: 1200px; /* 这里微调至 1200px 以留出空间容纳 Password 列 */
         border-collapse: collapse;
         background-color: #FFF8F0;
         border-radius: 10px;
@@ -206,9 +206,9 @@ if ($conn->connect_error) {
                     <thead>
                         <tr>
                             <th>CustomerID</th>
-                            <th width="250">UserName</th>
-                            <th width="200">Name</th>
-                            <th>Email</th>
+                            <th width="180">UserName</th>
+                            <th width="150">Name</th>
+                            <th>Password</th> <th>Email</th>
                             <th>PhoneNumber</th>
                             <th width="180" style="text-align: center;">Actions</th>
                         </tr>
@@ -225,7 +225,7 @@ if ($conn->connect_error) {
                                 <td><?php echo $row['CustomerID']; ?></td>
                                 <td><?php echo $row['UserName']; ?></td>
                                 <td><?php echo $row['Name']; ?></td>
-                                <td><?php echo $row['Email']; ?></td>
+                                <td><?php echo $row['Password']; ?></td> <td><?php echo $row['Email']; ?></td>
                                 <td><?php echo $row['PhoneNumber']; ?></td>
                                 <td style="text-align: center;">
                                     <button class="btn-action btn-edit">Edit</button>
@@ -240,7 +240,7 @@ if ($conn->connect_error) {
                 </table>
             </div>
 
-            <divclass="bottom-buttons">
+            <div class="bottom-buttons">
                 <a href="addcustomer.php" class="btn-main"><i class="fa-solid fa-user-plus" style="margin-right: 8px;"></i>Add Customer</a>
             </div>
         </div>

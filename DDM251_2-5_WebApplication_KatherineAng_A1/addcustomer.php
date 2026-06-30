@@ -35,7 +35,7 @@
         color: #FFF8F0;
         font-weight: 600;
         height: 94vh;
-        width: 240px;
+        /* 这里删除了固定的 width，使其与 welcome.php 宽度完全一致 */
         padding: 10px;
         border-radius: 15px;
         text-align: left;
@@ -81,6 +81,7 @@
 
     .form-container {
         background-color: #4B2E2B; 
+        max-width: 600px; /* 这里微调加了最大宽度，让 form 变窄更美观 */
         padding: 40px;
         border-radius: 20px;
         box-shadow: 0 8px 16px rgba(0,0,0,0.1);
@@ -166,10 +167,14 @@
     <div class="max-width">
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
+
             <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+
             <a href="customer.php" class="sidebar_menu active"><i class="fa-solid fa-user"></i>Customers</a>
-            <a href="products.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
-            <a href="logout.php" class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</a>
+
+            <a href="product.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
+
+            <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
 
         <div class="main-content">
@@ -186,6 +191,11 @@
                     <div class="form-group">
                         <label>Username:</label>
                         <input type="text" name="username" required autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" name="password" required autocomplete="off">
                     </div>
 
                     <div class="form-group">
