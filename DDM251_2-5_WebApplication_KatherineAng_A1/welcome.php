@@ -31,7 +31,7 @@ if ($conn->connect_error) {
 
     body {
         text-align: center;
-        font-family: "Poppins", sans-serif;
+        font-famiy: "Poppins", sans-serif;
         background-color: #ffffff;
         font-size: 16px;
     }
@@ -97,7 +97,7 @@ if ($conn->connect_error) {
 
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
 
-            <a href="product.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</div>
+            <a href="products.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
 
             <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>

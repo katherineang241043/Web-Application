@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
+    <title>Products</title>
     <script src="https://kit.fontawesome.com/1619a0e9db.js" crossorigin="anonymous"></script>
 </head>
 
@@ -48,7 +48,6 @@ if ($conn->connect_error) {
         color: #FFF8F0;
         font-weight: 600;
         height: 94vh;
-        width: 240px;
         padding: 10px;
         border-radius: 15px;
         text-align: left;
@@ -188,10 +187,14 @@ if ($conn->connect_error) {
     <div class="max-width">
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
-            <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+
+            <a href="welome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
-            <a href="products.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
-            <a href="logout.php" class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</a>
+
+            <a href="product.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
+
+            <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
 
         <div class="main-content">
