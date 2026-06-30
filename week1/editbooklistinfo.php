@@ -13,15 +13,17 @@ if (!$conn) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $New_Userame = ($_POST["name"]);
-    $New_Password = ($_POST["password"]);
-    $New_YearJoin = ($_POST["yearjoin"]);
+    $ISBN = $_POST["ISBN"];
+    $New_title = $_POST["title"];
+    $New_author = $_POST["author"];
+    $New_description = $_POST["description"];
+    $New_price = $_POST["price"];
 
-    $sql = "UPDATE student SET name='$New_Userame', password='$New_Password', yearjoin='$New_YearJoin' WHERE email='$login_email'";
+    $sql = "UPDATE booklist SET title='$New_title', author='$New_author', description='$New_description', price='$New_price' WHERE ISBN='$ISBN'";
 
     if (mysqli_query($conn, $sql)) {
         echo "Record updated successfully";
-         header('Location: profile.php');
+         header('Location: booklist.php');
     } else {
         echo "Error updating record: " . mysqli_error($conn);
     }

@@ -48,7 +48,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
                 <td><?php echo $row['author']; ?></td>
                 <td><?php echo $row['description']; ?></td>
                 <td><?php echo $row['price']; ?></td>
-                <td><input type="button" value="Edit"></td>
+                <td><button><a class="link" href="editbooklist.php?ISBN=<?php echo $row['ISBN']; ?>">Edit</a></button></td>
                 <td><button>Delete</button></td>
             </tr>
         <?php
