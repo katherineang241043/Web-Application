@@ -18,7 +18,7 @@
 
 <body>
     <button><a href="profile.php">Back</a></button>
-    <form action="editprofileinfo.php" method="POST">
+    <form action="runeditprofile.php" method="POST">
         <table width="600">
             <tr>
                 <th>New Username</th>
@@ -28,13 +28,13 @@
             </tr>
             <tr>
                 <td><input type="text" name="name" required></td>
-                <td><input type="password" name="password"></td>
-                <td><input type="password" name="confirmpassword"></td>
-                <td><input type="text" name="yearjoin" required></td>
+                <td><input type="password" name="password" required minlength="6"></td>
+                <td><input type="password" name="confirmpassword" required minlength="6"></td>
+                <td><input type="number" min="1900" max="<?php echo date("Y"); ?>" step="1" name="yearjoin" required maxlength="4"></td>
                 <td><input type="submit" value="Submit"></td>
             </tr>
         </table>
-         <?php
+        <?php
                 if (isset($_GET['error'])){
                     echo '<div style="color:red; margin: 5px 0;">' . $_GET['error'] . '</div>';
                 }

@@ -1,5 +1,6 @@
 <?php
 session_start();
+$login_email = $_SESSION['email'];
 
 $servername = "localhost";
 $username = "katherine";
@@ -14,7 +15,17 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-if (empty($_POST["password"]) || empty($_POST["confirmpassword"]) || empty($_POST["name"]) || empty($_POST["yearjoin"])) {
+$new_name = $_POST["name"];
+$new_password = $_POST["password"];
+$confirm_password = $_POST["confirmpassword"];
+$new_yearjoin = $_POST["yearjoin"];
+
+if ($new_password !== $confirm_password) {
+    header("Location: editprofile.php?error=Passwords do not match");
+    exit;
+}
+
+/* if (empty($_POST["password"]) || empty($_POST["confirmpassword"]) || empty($_POST["name"]) || empty($_POST["yearjoin"])) {
     
     header("Location: editProfile.php?error=Please fill in all fields.");
 
@@ -33,13 +44,14 @@ if (empty($_POST["password"]) || empty($_POST["confirmpassword"]) || empty($_POS
 } else {
     
     $update = "UPDATE student SET password='" . $_POST["password"] . "', name='" . $_POST["name"] . "', yearjoin='" . $_POST["yearjoin"] . "' WHERE email='" . $_SESSION["email"] . "'";  
+ */
+    $sql = "UPDATE student SET name='$new_name', password='$new_password', yearjoin='$new_yearjoin' WHERE email='$login_email'";
 
-    if (mysqli_query($conn, $update)) {
+    if (mysqli_query($conn, $sql)) {
         header("Location: profile.php");
     } else {
         echo "Error updating record: " . mysqli_error($conn);
     }
-}
 
 mysqli_close($conn);
 ?>

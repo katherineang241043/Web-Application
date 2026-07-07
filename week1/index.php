@@ -11,6 +11,11 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 if (isset($_POST['email']) && isset($_POST['password'])) {
+  if (empty($_POST["email"])){
+    echo("Please fill in Email.");
+  } else if (empty($_POST["password"])){
+    echo("Please fill in Password.");
+  }
 
 session_start();
 
