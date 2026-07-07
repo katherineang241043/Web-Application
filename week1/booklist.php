@@ -5,6 +5,16 @@ $password = "20041126Ang";
 $dbname = "katherine";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+session_start();
+
+if(!isset($_SESSION["email"])) {
+    header("Location: index.php");
+}
 ?>
 
 <!DOCTYPE html>

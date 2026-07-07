@@ -34,6 +34,11 @@
                 <td><input type="submit" value="Submit"></td>
             </tr>
         </table>
+         <?php
+                if (isset($_GET['error'])){
+                    echo '<div style="color:red; margin: 5px 0;">' . $_GET['error'] . '</div>';
+                }
+            ?>
     </form>
 </body>
 </html>
