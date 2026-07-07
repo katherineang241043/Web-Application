@@ -1,8 +1,15 @@
 <?php
+session_start();
+
+if (!isset($_SESSION["email"])) {
+    header("Location: login.php?error=Please login first.");
+    exit();
+}
+
 $servername = "localhost";
-$username = "katshop";
-$password = "katshop_123";
-$dbname = "katshop";
+$username = "katherine";
+$password = "20041126Ang";
+$dbname = "katherine";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -57,7 +64,6 @@ if ($conn->connect_error) {
         flex-direction: column; 
     }
 
-
     .sidebar_menu {
         display: flex;         
         align-items: center;   
@@ -65,7 +71,6 @@ if ($conn->connect_error) {
         text-decoration: none !important;
         color: #FFF8F0;
     }
-
 
     .sidebar_menu:hover {
         color: #83dae7;
@@ -85,6 +90,7 @@ if ($conn->connect_error) {
 
     section {
         padding: 30px;
+        margin-left: 290px;
     }
 </style>
 
@@ -93,16 +99,18 @@ if ($conn->connect_error) {
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
 
-            <div class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</div>
+            <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
 
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
 
             <a href="product.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
 
-            <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
+            <a href="logout.php" class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</a>
         </div>
 
-        <section><h1>Welcome</h1></section>
+        <section>
+            <h1>Welcome, <?php echo $_SESSION['email']; ?>!</h1>
+        </section>
     </div>
 </body>
 

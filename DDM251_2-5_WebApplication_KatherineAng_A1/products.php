@@ -152,7 +152,7 @@ if ($conn->connect_error) {
     }
 
     .btn-delete {
-        background-color: #ff4d4d;
+        background-color: #d20000;
         color: #ffffff;
     }
 

@@ -152,7 +152,7 @@ if ($conn->connect_error) {
     }
 
     .btn-delete {
-        background-color: #ff4d4d;
+        background-color: #d20000;
         color: #ffffff;
     }
 
@@ -228,9 +228,13 @@ if ($conn->connect_error) {
                                 <td><?php echo $row['Password']; ?></td> <td><?php echo $row['Email']; ?></td>
                                 <td><?php echo $row['PhoneNumber']; ?></td>
                                 <td style="text-align: center;">
-                                    <button class="btn-action btn-edit">Edit</button>
-                                    <button class="btn-action btn-delete">Delete</button>
-                                </td>
+                                <form action="editcustomer.php" method="POST" style="display: inline-block; margin: 0; padding: 0;">
+                                    <input type="hidden" name="CustomerID" value="<?php echo $row['CustomerID']; ?>">
+                                    <input type="submit" value="Edit" class="btn-action btn-edit">
+                                </form>
+
+                                <a href="deletecustomer.php?CustomerID=<?php echo $row['CustomerID']; ?>" class="btn-action btn-delete" style="text-decoration: none; display: inline-block;" onclick="return confirm('Are you sure you want to delete this customer?')">Delete</a>
+                            </td>
                             </tr>
                         <?php
                         }
