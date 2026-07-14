@@ -188,11 +188,11 @@ if ($conn->connect_error) {
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
 
-            <a href="welome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+            <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
 
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
 
-            <a href="product.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
+            <a href="products.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
 
             <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
@@ -213,7 +213,6 @@ if ($conn->connect_error) {
                     </thead>
                     <tbody>
                         <?php
-
                         $query = "SELECT * FROM products";
                         $result = mysqli_query($conn, $query);
 
@@ -225,8 +224,14 @@ if ($conn->connect_error) {
                                 <td><?php echo $row['Price']; ?></td>
                                 <td><?php echo $row['Quantity']; ?></td>
                                 <td style="text-align: center;">
-                                    <button class="btn-action btn-edit">Edit</button>
-                                    <button class="btn-action btn-delete">Delete</button>
+                                    
+                                    <form action="editproduct.php" method="POST" style="display: inline-block; margin: 0; padding: 0;">
+                                        <input type="hidden" name="ProductID" value="<?php echo $row['ProductID']; ?>">
+                                        <input type="submit" value="Edit" class="btn-action btn-edit">
+                                    </form>
+
+                                    <a href="deleteproduct.php?ProductID=<?php echo $row['ProductID']; ?>" class="btn-action btn-delete" style="text-decoration: none; display: inline-block;" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a>
+                                    
                                 </td>
                             </tr>
                         <?php

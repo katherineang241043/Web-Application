@@ -12,28 +12,34 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$customer_id = "";
-$username_val = "";
-$name_val = "";
-$password_val = "";
-$email_val = "";
-$phone_val = "";
+$product_id = "";
+$product_name_val = "";
+$price_val = "";
+$stock_val = "";
 
-if (isset($_POST['CustomerID'])) {
-    $customer_id = $_POST['CustomerID'];
+if (isset($_REQUEST['ProductID'])) {
+    $product_id = $_REQUEST['ProductID'];
     
-    $query = "SELECT * FROM customers WHERE CustomerID = '$customer_id'";
+
+    $query = "SELECT * FROM products WHERE ProductID = '$product_id'";
     $result = mysqli_query($conn, $query);
-    
     if ($row = mysqli_fetch_assoc($result)) {
-        $username_val = $row['UserName'];
-        $name_val = $row['Name'];
-        $password_val = $row['Password'];
-        $email_val = $row['Email'];
-        $phone_val = $row['PhoneNumber'];
+        $product_name_val = $row['ProductName'];
+        $price_val = $row['Price'];
+        $stock_val = $row['Quantity'];
     }
+
+
+    if (isset($_SESSION['old_post'])) {
+        $product_name_val = $_SESSION['old_post']['productname'];
+        $price_val = $_SESSION['old_post']['price'];
+        $stock_val = $_SESSION['old_post']['stock'];
+        
+        unset($_SESSION['old_post']);
+    }
+    
 } else {
-    header("Location: customer.php");
+    header("Location: products.php");
     exit();
 }
 ?>
@@ -44,7 +50,7 @@ if (isset($_POST['CustomerID'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Customer</title>
+    <title>Edit Product</title>
     <script src="https://kit.fontawesome.com/1619a0e9db.js" crossorigin="anonymous"></script>
 </head>
 
@@ -215,13 +221,13 @@ if (isset($_POST['CustomerID'])) {
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
             <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
-            <a href="customer.php" class="sidebar_menu active"><i class="fa-solid fa-user"></i>Customers</a>
-            <a href="product.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
+            <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
+            <a href="products.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
             <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
 
         <div class="main-content">
-            <h1>Edit Customer</h1>
+            <h1>Edit Product</h1>
 
             <div class="form-container">
                 <?php
@@ -230,42 +236,27 @@ if (isset($_POST['CustomerID'])) {
                 }
                 ?>
 
-                <form action="runeditcustomer.php" method="POST" onsubmit="return validatePassword()">
+                <form action="runeditproduct.php" method="POST">
                     
-                    <input type="hidden" name="CustomerID" value="<?php echo $customer_id; ?>">
+                    <input type="hidden" name="ProductID" value="<?php echo $product_id; ?>">
 
                     <div class="form-group">
-                        <label>Username:</label>
-                        <input type="text" name="username" value="<?php echo $username_val; ?>" required autocomplete="off">
+                        <label>Product Name:</label>
+                        <input type="text" name="productname" value="<?php echo $product_name_val; ?>" required autocomplete="off">
                     </div>
 
                     <div class="form-group">
-                        <label>Password:</label>
-                        <input type="password" id="password" name="password" value="<?php echo $password_val; ?>" required minlength="6" autocomplete="off">
+                        <label>Price (RM):</label>
+                        <input type="text" name="price" value="<?php echo $price_val; ?>" required autocomplete="off">
                     </div>
 
                     <div class="form-group">
-                        <label>Confirm Password:</label>
-                        <input type="password" id="confirmpassword" name="confirmpassword" value="<?php echo $password_val; ?>" required minlength="6" autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Name:</label>
-                        <input type="text" name="name" value="<?php echo $name_val; ?>" required autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Email:</label>
-                        <input type="email" name="email" value="<?php echo $email_val; ?>" required autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Phone Number:</label>
-                        <input type="text" name="phonenumber" value="<?php echo $phone_val; ?>" required autocomplete="off">
+                        <label>Quantity:</label>
+                        <input type="number" name="stock" value="<?php echo $stock_val; ?>" required autocomplete="off">
                     </div>
 
                     <div class="button-group">
-                        <a href="customer.php" class="btn btn-back">Cancel</a>
+                        <a href="products.php" class="btn btn-back">Cancel</a>
                         <input type="submit" class="btn btn-submit" value="Save Changes">
                     </div>
 
@@ -273,19 +264,6 @@ if (isset($_POST['CustomerID'])) {
             </div>
         </div>
     </div>
-
-    <script>
-    function validatePassword() {
-        var password = document.getElementById("password").value;
-        var confirmPassword = document.getElementById("confirmpassword").value;
-        
-        if (password !== confirmPassword) {
-            alert("Passwords do not match! Please check again.");
-            return false;
-        }
-        return true;
-    }
-    </script>
 </body>
 
 </html>
