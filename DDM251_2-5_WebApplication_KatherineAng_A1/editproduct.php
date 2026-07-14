@@ -20,22 +20,18 @@ $stock_val = "";
 if (isset($_REQUEST['ProductID'])) {
     $product_id = $_REQUEST['ProductID'];
     
-
     $query = "SELECT * FROM products WHERE ProductID = '$product_id'";
     $result = mysqli_query($conn, $query);
+    
     if ($row = mysqli_fetch_assoc($result)) {
         $product_name_val = $row['ProductName'];
         $price_val = $row['Price'];
         $stock_val = $row['Quantity'];
     }
 
-
-    if (isset($_SESSION['old_post'])) {
-        $product_name_val = $_SESSION['old_post']['productname'];
-        $price_val = $_SESSION['old_post']['price'];
-        $stock_val = $_SESSION['old_post']['stock'];
-        
-        unset($_SESSION['old_post']);
+    if (isset($_SESSION['error_price'])) {
+        $price_val = $_SESSION['error_price'];
+        unset($_SESSION['error_price']);
     }
     
 } else {
@@ -43,6 +39,7 @@ if (isset($_REQUEST['ProductID'])) {
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -220,7 +217,7 @@ if (isset($_REQUEST['ProductID'])) {
     <div class="max-width">
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
-            <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+            <a href="" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
             <a href="products.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
             <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
@@ -252,7 +249,7 @@ if (isset($_REQUEST['ProductID'])) {
 
                     <div class="form-group">
                         <label>Quantity:</label>
-                        <input type="number" name="stock" value="<?php echo $stock_val; ?>" required autocomplete="off">
+                        <input type="number" name="quantity" value="<?php echo $stock_val; ?>" required autocomplete="off">
                     </div>
 
                     <div class="button-group">

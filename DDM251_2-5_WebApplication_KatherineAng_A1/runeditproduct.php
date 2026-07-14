@@ -13,20 +13,19 @@ if (!$conn) {
 }
 
 $product_id = $_POST["ProductID"];
-$product_name = trim($_POST["productname"]);
-$price = trim($_POST["price"]);
-$quantity = trim($_POST["stock"]);
+$product_name = $_POST["productname"];
+$price = $_POST["price"];
+$quantity = $_POST["quantity"];
 
 
-if ($product_name === "" || $price === "" || $quantity === "" || !is_numeric($price) || floatval($price) <= 0) {
+if ($product_name == "" || $price == "" || $quantity == "") {
+    header("Location: editproduct.php?error=All fields are required and cannot be empty&ProductID=" . $product_id);
+    exit();
+} 
+elseif (!is_numeric($price)) {
+    $_SESSION['error_price'] = $price; 
     
-    $_SESSION['old_post'] = $_POST;
-    
-    if ($product_name === "" || $price === "" || $quantity === "") {
-        header("Location: editproduct.php?error=All fields are required and cannot be empty&ProductID=" . $product_id);
-    } else {
-        header("Location: editproduct.php?error=Price must be a valid positive number&ProductID=" . $product_id);
-    }
+    header("Location: editproduct.php?error=Price must be a valid positive number&ProductID=" . $product_id);
     exit();
 }
 
