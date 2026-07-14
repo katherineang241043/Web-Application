@@ -209,7 +209,7 @@ if (isset($_REQUEST['ProductID'])) {
     }
 
     .error-msg {
-        color: #ff4d4d;
+        color: #ff0000;
         margin-bottom: 15px;
         font-weight: 600;
         text-align: left;

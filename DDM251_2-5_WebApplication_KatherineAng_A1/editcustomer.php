@@ -203,7 +203,7 @@ if (isset($_POST['CustomerID'])) {
     }
 
     .error-msg {
-        color: #ff4d4d;
+        color: #ff0000;
         margin-bottom: 15px;
         font-weight: 600;
         text-align: left;
@@ -216,7 +216,7 @@ if (isset($_POST['CustomerID'])) {
             <div class="sidebar_header">Kat Shop</div>
             <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
             <a href="customer.php" class="sidebar_menu active"><i class="fa-solid fa-user"></i>Customers</a>
-            <a href="product.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
+            <a href="products.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
             <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
 

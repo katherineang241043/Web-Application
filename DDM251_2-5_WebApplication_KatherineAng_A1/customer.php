@@ -189,7 +189,7 @@ if ($conn->connect_error) {
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
 
-            <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+            <a href="" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
 
             <a href="customer.php" class="sidebar_menu active"><i class="fa-solid fa-user"></i>Customers</a>
 
