@@ -103,7 +103,7 @@ if ($conn->connect_error) {
 
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
 
-            <a href="product.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
+            <a href="products.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
 
             <a href="logout.php" class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</a>
         </div>

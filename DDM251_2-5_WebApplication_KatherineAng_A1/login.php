@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 $servername = "localhost";
 $username = "katshop";
 $password = "katshop_123";
@@ -31,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $data->fetch_assoc();
 
             if ($pword == $row['Password']) {
+                $_SESSION['email'] = $row['Email'];
                 header("location:welcome.php");
                 exit();
             } else {
