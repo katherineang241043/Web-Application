@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap');
 
+
 :root {
     --ink: #17191f;
     --paper: #f7f4ee;
@@ -35,7 +36,7 @@ a {
     color: inherit;
 }
 
-/* Topbar & Footer Layout */
+/* Topbar & Footer */
 
 .topbar {
     height: 76px;
@@ -71,6 +72,11 @@ a {
     border-radius: 6px;
     transform: rotate(-4deg);
     font-size: 21px;
+}
+
+.dark-brand {
+    color: var(--ink);
+    margin-bottom: 38px;
 }
 
 .nav-links {
@@ -146,7 +152,164 @@ footer {
     color: white;
 }
 
-/* Messages */
+.full-button {
+    width: 100%;
+}
+
+/* index.php & register.php */
+
+.auth-body {
+    background: var(--white);
+}
+
+.auth-layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+}
+
+.auth-art {
+    padding: 8% 10%;
+    color: white;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-art h1 {
+    font-size: clamp(44px, 6vw, 82px);
+    line-height: .98;
+    max-width: 650px;
+    margin: 38px 0 22px;
+}
+
+.auth-art>p {
+    color: #b7b8bd;
+    max-width: 520px;
+    line-height: 1.7;
+}
+
+.mini-label,
+.eyebrow {
+    font-size: 12px;
+    letter-spacing: .18em;
+    font-weight: 700;
+    color: var(--coral);
+}
+
+.box-scene {
+    position: relative;
+    height: 320px;
+    margin-top: 30px;
+}
+
+.big-box {
+    width: 210px;
+    height: 230px;
+    background: var(--yellow);
+    color: var(--ink);
+    display: grid;
+    place-items: center;
+    position: absolute;
+    left: 28%;
+    bottom: -25px;
+    transform: rotate(-5deg);
+    box-shadow: 18px 18px 0 var(--coral);
+    border: 5px solid white;
+}
+
+.big-box span {
+    font: 700 130px "Space Grotesk";
+}
+
+.floating-card {
+    position: absolute;
+    padding: 13px 20px;
+    color: var(--ink);
+    background: white;
+    font-weight: 700;
+    box-shadow: 5px 5px 0 var(--blue);
+    transform: rotate(8deg);
+}
+
+.card-one {
+    left: 5%;
+    top: 30%;
+}
+
+.card-two {
+    right: 6%;
+    bottom: 12%;
+    background: var(--purple);
+    color: white;
+    box-shadow: 5px 5px 0 var(--yellow);
+    transform: rotate(-8deg);
+}
+
+.auth-panel {
+    display: grid;
+    place-items: center;
+    padding: 50px;
+}
+
+.auth-form-wrap {
+    width: min(430px, 100%);
+}
+
+.auth-form-wrap h2 {
+    font-size: 40px;
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* form */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: white;
+    font: 15px "DM Sans", sans-serif;
+    color: var(--ink);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: 2px solid var(--blue);
+    border-color: transparent;
+}
+
+.form-switch {
+    margin-top: 24px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.form-switch a,
+.message a {
+    color: var(--coral);
+    font-weight: 700;
+}
+
+/* message */
 
 .message {
     border-radius: 7px;
@@ -155,15 +318,60 @@ footer {
     font-size: 14px;
 }
 
+.error-message {
+    background: #ffe1df;
+    color: #9e2723;
+    border-left: 4px solid var(--coral);
+}
+
+.success-message {
+    background: #dff5ec;
+    color: #16704f;
+    border-left: 4px solid var(--green);
+}
+
 .warning-message {
     background: #fff3c2;
     color: #715900;
     border-left: 4px solid var(--yellow);
 }
 
-.message a {
-    color: var(--coral);
-    font-weight: 700;
+/* card */
+
+.register-body {
+    padding: 60px 5%;
+    background: linear-gradient(135deg, var(--paper), #d9f2fb);
+}
+
+.simple-auth-card {
+    width: min(820px, 100%);
+    margin: auto;
+    padding: 45px;
+    background: white;
+    border: 1px solid var(--line);
+    box-shadow: 10px 10px 0 var(--ink);
+}
+
+.simple-auth-card h1 {
+    font-size: 38px;
+    margin-bottom: 8px;
+}
+
+.two-column-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 22px;
+    margin-top: 30px;
+}
+
+.button-at-bottom {
+    display: flex;
+    align-items: end;
+}
+
+.form-actions-wide {
+    grid-column: 1 / -1;
+    margin-top: 10px;
 }
 
 /* Dashboard Hero */
@@ -223,7 +431,6 @@ footer {
 }
 
 /* Stats */
-
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -326,9 +533,14 @@ footer {
 
 @media (max-width: 900px) {
 
+    .auth-layout,
     .hero,
     .content-grid {
         grid-template-columns: 1fr;
+    }
+
+    .auth-art {
+        min-height: 620px;
     }
 
     .nav-links {
@@ -365,12 +577,14 @@ footer {
         width: 92%;
     }
 
+    .two-column-form,
     .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    .hero,
-    .panel {
+    .auth-panel,
+    .simple-auth-card,
+    .hero {
         padding: 28px;
     }
 
