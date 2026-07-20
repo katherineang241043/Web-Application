@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap');
+
+:root {
+    --ink: #17191f;
+    --paper: #f7f4ee;
+    --white: #ffffff;
+    --coral: #ff5b55;
+    --yellow: #ffd84d;
+    --blue: #65c5e8;
+    --green: #45b98b;
+    --purple: #8e78d7;
+    --line: #dedbd4;
+    --muted: #6f7077;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--paper);
+    font-family: "DM Sans", sans-serif;
+}
+
+h1,
+h2,
+h3 {
+    font-family: "Space Grotesk", sans-serif;
+    margin-top: 0;
+}
+
+a {
+    color: inherit;
+}
+
+/* Topbar & Footer Layout */
+
+.topbar {
+    height: 76px;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ink);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: .04em;
+}
+
+.brand-box {
+    width: 33px;
+    height: 33px;
+    display: grid;
+    place-items: center;
+    background: var(--coral);
+    color: white;
+    border-radius: 6px;
+    transform: rotate(-4deg);
+    font-size: 21px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links a {
+    color: #c9c9cd;
+    padding: 11px 14px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: white;
+    background: #2a2d34;
+}
+
+.nav-links .logout-link {
+    color: #ff908c;
+}
+
+.page-container {
+    width: min(1180px, 90%);
+    margin: auto;
+    min-height: calc(100vh - 136px);
+}
+
+footer {
+    color: var(--muted);
+    text-align: center;
+    padding: 30px;
+    font-size: 13px;
+}
+
+/* Buttons */
+
+.btn {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 13px 22px;
+    font: 700 14px "DM Sans", sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: .2s;
+}
+
+.btn-primary {
+    background: var(--coral);
+    color: white;
+    box-shadow: 4px 4px 0 var(--ink);
+}
+
+.btn-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+}
+
+.btn-outline {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: var(--ink);
+    color: white;
+}
+
+/* Messages */
+
+.message {
+    border-radius: 7px;
+    padding: 13px 15px;
+    margin: 18px 0;
+    font-size: 14px;
+}
+
+.warning-message {
+    background: #fff3c2;
+    color: #715900;
+    border-left: 4px solid var(--yellow);
+}
+
+.message a {
+    color: var(--coral);
+    font-weight: 700;
+}
+
+/* Dashboard Hero */
+
+.hero {
+    margin: 55px 0 26px;
+    padding: 48px;
+    min-height: 390px;
+    display: grid;
+    grid-template-columns: 1.35fr .65fr;
+    align-items: center;
+    gap: 40px;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    box-shadow: 10px 10px 0 var(--ink);
+    overflow: hidden;
+}
+
+.hero h1 {
+    font-size: clamp(44px, 6vw, 70px);
+    line-height: 1;
+    margin: 15px 0;
+}
+
+.hero p {
+    max-width: 610px;
+    font-size: 17px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.hero-box {
+    width: 220px;
+    height: 250px;
+    margin: auto;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    background: var(--coral);
+    color: white;
+    transform: rotate(5deg);
+    border: 5px solid white;
+    box-shadow: 12px 12px 0 var(--ink);
+}
+
+.hero-box span {
+    font: 700 120px "Space Grotesk";
+    line-height: 1;
+}
+
+.hero-box small {
+    font-weight: 700;
+}
+
+/* Stats */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 30px 0;
+}
+
+.stat-card {
+    min-height: 130px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border: 2px solid var(--ink);
+}
+
+.stat-card.coral {
+    background: #ffd9d7;
+}
+
+.stat-card.yellow {
+    background: #fff2b5;
+}
+
+.stat-card.blue {
+    background: #d9f2fb;
+}
+
+.stat-icon {
+    font-size: 35px;
+}
+
+.stat-card strong {
+    font: 700 28px "Space Grotesk";
+}
+
+.stat-card p {
+    margin: 4px 0 0;
+    color: var(--muted);
+}
+
+/* Content Grid & Info Panels */
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 22px;
+    margin-bottom: 45px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 32px;
+}
+
+.panel h2 {
+    font-size: 28px;
+}
+
+.recommendation-panel {
+    border-top: 7px solid var(--coral);
+}
+
+.recommendation-panel a {
+    color: var(--coral);
+    font-weight: 700;
+}
+
+.rarity-panel {
+    border-top: 7px solid var(--blue);
+}
+
+.rarity-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0 7px;
+}
+
+.rate-bar {
+    height: 8px;
+    background: #eee;
+}
+
+.rate-bar i {
+    display: block;
+    height: 100%;
+    background: var(--blue);
+}
+
+.rare-rate i {
+    background: var(--purple);
+}
+
+.secret-rate i {
+    background: var(--coral);
+}
+
+/* Responsive Media Queries */
+
+@media (max-width: 900px) {
+
+    .hero,
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-links {
+        gap: 0;
+    }
+
+    .nav-links a {
+        padding: 9px;
+        font-size: 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero-box {
+        display: none;
+    }
+}
+
+@media (max-width: 620px) {
+    .topbar {
+        height: auto;
+        padding: 16px;
+        display: block;
+    }
+
+    .nav-links {
+        margin-top: 15px;
+        overflow-x: auto;
+    }
+
+    .page-container {
+        width: 92%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero,
+    .panel {
+        padding: 28px;
+    }
+
+    .hero h1 {
+        font-size: 40px;
+    }
+}
