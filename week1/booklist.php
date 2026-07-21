@@ -23,7 +23,7 @@ if(!isset($_SESSION["email"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book List</title>
+    <title>Book List</title>   
 </head>
 <style>
     table {
@@ -59,7 +59,7 @@ if(!isset($_SESSION["email"])) {
                 <td><?php echo $row['description']; ?></td>
                 <td><?php echo $row['price']; ?></td>
                 <td><button><a class="link" href="editbooklist.php?ISBN=<?php echo $row['ISBN']; ?>">Edit</a></button></td>
-                <td><button>Delete</button></td>
+                <td><button><a class="link" href="rundeletebook.php?ISBN=<?php echo $row['ISBN']; ?>" onclick="return confirm('Are you sure you want to delete (<?php echo $row['ISBN']; ?>) book?')">Delete</a></button></td>
             </tr>
         <?php
         }
@@ -68,8 +68,13 @@ if(!isset($_SESSION["email"])) {
 
         <a href="profile.php"><input type="submit" value="Profile"></a>
         <a href="addbook.php"><input type="submit" value="AddBook"></a>
-        <a href=""><input type="submit" value="Logout"></a>
+        <a href="logout.php"><input type="submit" value="Logout"></a>
     </table>
+
+    <script> 
+    function myFunction(ISBN) { 
+        return confirm("Are you sure you want to delete this = " + ISBN + " book?"); } 
+    </script>
 
 </body>
 </html>

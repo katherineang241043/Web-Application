@@ -1,3 +1,8 @@
+   <?php
+                if (isset($_GET['error'])){
+                    echo '<div style="color:red; margin: 5px 0;">' . $_GET['error'] . '</div>';
+                }
+            ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -45,7 +45,11 @@ if ($new_password !== $confirm_password) {
     
     $update = "UPDATE student SET password='" . $_POST["password"] . "', name='" . $_POST["name"] . "', yearjoin='" . $_POST["yearjoin"] . "' WHERE email='" . $_SESSION["email"] . "'";  
  */
-    $sql = "UPDATE student SET name='$new_name', password='$new_password', yearjoin='$new_yearjoin' WHERE email='$login_email'";
+    $sql = "UPDATE student SET 
+    name='$new_name', 
+    password='$new_password', 
+    yearjoin='$new_yearjoin' 
+    WHERE email='$login_email'";
 
     if (mysqli_query($conn, $sql)) {
         header("Location: profile.php");
