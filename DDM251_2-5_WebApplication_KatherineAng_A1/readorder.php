@@ -11,6 +11,8 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
+$order_id = isset($_GET['OrderID']) ? $_GET['OrderID'] : 0;
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +21,7 @@ if ($conn->connect_error) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management</title>
+    <title>Order Details - Kat Shop</title>
     <script src="https://kit.fontawesome.com/1619a0e9db.js" crossorigin="anonymous"></script>
 </head>
 
@@ -129,62 +131,21 @@ if ($conn->connect_error) {
         font-size: 14px;
     }
 
-    tr:last-child td {
+    .total-row {
+        font-weight: 800;
+        font-size: 16px;
+        background-color: #f7ede2;
+    }
+
+    .total-row td {
         border-bottom: none;
-    }
-
-    .action-group {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        white-space: nowrap;
-    }
-
-    .btn-action {
-        padding: 6px 16px;
-        border: none;
-        border-radius: 6px;
-        font-family: "Poppins", sans-serif;
-        font-weight: 600;
-        font-size: 13px;
-        cursor: pointer;
-        transition: 0.2s;
-        text-decoration: none;
-        display: inline-block;
-        line-height: 1.5;
-    }
-
-    .btn-read {
-        background-color: #007bff;
-        color: #ffffff;
-    }
-
-    .btn-read:hover {
-        background-color: #0056b3;
-    }
-
-    .btn-edit {
-        background-color: #C08552;
-        color: #ffffff;
-    }
-
-    .btn-edit:hover {
-        background-color: #a46f40;
-    }
-
-    .btn-delete {
-        background-color: #d20000;
-        color: #ffffff;
-    }
-
-    .btn-delete:hover {
-        background-color: #cc0000;
     }
 
     .bottom-buttons {
         text-align: left;
-        margin-top: 20px;
+        margin-top: 25px;
+        display: flex;
+        gap: 15px;
     }
 
     .btn-main {
@@ -192,16 +153,26 @@ if ($conn->connect_error) {
         background-color: #4B2E2B;
         color: #FFF8F0;
         text-decoration: none;
-        padding: 12px 30px;
+        padding: 12px 28px;
         font-weight: 600;
         border-radius: 8px;
-        margin-right: 15px;
         transition: 0.2s;
+        border: none;
+        cursor: pointer;
     }
 
     .btn-main:hover {
         background-color: #C08552;
         color: #FFF8F0;
+    }
+
+    .btn-edit {
+        background-color: #C08552;
+        color: #FFF8F0;
+    }
+
+    .btn-edit:hover {
+        background-color: #a46f40;
     }
 </style>
 
@@ -222,46 +193,59 @@ if ($conn->connect_error) {
         </div>
 
         <div class="main-content">
-            <h1>Order List</h1>
+            <h1>Order Details</h1>
 
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th width="60">ID</th>
-                            <th width="160">UserName</th>
-                            <th width="140">First Name</th>
-                            <th width="140">Last Name</th>
-                            <th>Order Date</th>
-                            <th width="260" style="text-align: center;">Actions</th>
+                            <th width="90">Order ID</th>
+                            <th width="130">Detail ID</th>
+                            <th width="140">Username</th>
+                            <th>Product</th>
+                            <th width="180">Order Date</th>
+                            <th width="90" style="text-align: center;">Quantity</th>
+                            <th width="120" style="text-align: right;">Price ($)</th>
+                            <th width="130" style="text-align: right;">Total Price ($)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $query = "SELECT * FROM orders";
+                        $query = "SELECT od.*, o.UserName, o.OrderDate 
+                                  FROM order_details od 
+                                  JOIN orders o ON od.OrderID = o.OrderID 
+                                  WHERE od.OrderID = '$order_id'";
+                        
                         $result = mysqli_query($conn, $query);
+                        $grand_total = 0;
 
                         if ($result && mysqli_num_rows($result) > 0) {
                             while ($row = mysqli_fetch_assoc($result)) {
+                                $quantity = $row['Quantity'];
+                                $price = $row['ProductPrice'];
+                                $subtotal = $quantity * $price;
+                                $grand_total += $subtotal;
                         ?>
                                 <tr>
                                     <td><?php echo $row['OrderID']; ?></td>
+                                    <td><?php echo $row['OrderDetailID']; ?></td>
                                     <td><?php echo $row['UserName']; ?></td>
-                                    <td><?php echo $row['FirstName']; ?></td>
-                                    <td><?php echo $row['LastName']; ?></td>
+                                    <td><?php echo $row['ProductName']; ?></td>
                                     <td><?php echo $row['OrderDate']; ?></td>
-                                    <td>
-                                        <div class="action-group">
-                                            <a href="readorder.php?OrderID=<?php echo $row['OrderID']; ?>" class="btn-action btn-read">Read</a>
-                                            <a href="editorder.php?OrderID=<?php echo $row['OrderID']; ?>" class="btn-action btn-edit">Edit</a>
-                                            <a href="deleteorder.php?OrderID=<?php echo $row['OrderID']; ?>" class="btn-action btn-delete" onclick="return confirm('Are you sure you want to delete this order?')">Delete</a>
-                                        </div>
-                                    </td>
+                                    <td style="text-align: center;"><?php echo $quantity; ?></td>
+                                    <td style="text-align: right;"><?php echo number_format($price, 2); ?></td>
+                                    <td style="text-align: right;"><?php echo number_format($subtotal, 2); ?></td>
                                 </tr>
                         <?php
                             }
+                        ?>
+                            <tr class="total-row">
+                                <td colspan="7" style="text-align: right;">Total:</td>
+                                <td style="text-align: right; color: #d20000;"><?php echo number_format($grand_total, 2); ?></td>
+                            </tr>
+                        <?php
                         } else {
-                            echo '<tr><td colspan="6" style="text-align:center;">No orders found.</td></tr>';
+                            echo '<tr><td colspan="8" style="text-align:center;">No order details found for this order.</td></tr>';
                         }
                         mysqli_close($conn);
                         ?>
@@ -270,7 +254,8 @@ if ($conn->connect_error) {
             </div>
 
             <div class="bottom-buttons">
-                <a href="addorder.php" class="btn-main"><i class="fa-solid fa-cart-plus" style="margin-right: 8px;"></i>Add Order</a>
+                <a href="order.php" class="btn-main"><i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i>BACK TO ORDER LIST</a>
+                <a href="editorder.php?OrderID=<?php echo $order_id; ?>" class="btn-main btn-edit"><i class="fa-solid fa-pen-to-square" style="margin-right: 8px;"></i>EDIT</a>
             </div>
         </div>
     </div>
