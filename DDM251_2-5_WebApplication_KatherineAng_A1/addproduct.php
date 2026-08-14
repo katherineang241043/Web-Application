@@ -173,6 +173,8 @@
 
             <a href="products.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
 
+            <a href="order.php" class="sidebar_menu"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
+
             <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
         </div>
 
