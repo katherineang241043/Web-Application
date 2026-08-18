@@ -1,136 +1,81 @@
 <?php
 session_start();
 
-$servername = "localhost";
-$username = "katshop";
-$password = "katshop_123";
-$dbname = "katshop";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if (!isset($_SESSION["email"])) {
+    header("Location: login.php?error=Please login first.");
+    exit();
 }
 
+$conn = new mysqli("localhost", "katshop", "katshop_123", "katshop");
+if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
-$products = [];
-$product_query = "SELECT * FROM products";
-$product_result = @mysqli_query($conn, $product_query);
+$products = $conn->query("SELECT * FROM products")->fetch_all(MYSQLI_ASSOC);
+$order_id = intval($_REQUEST['OrderID'] ?? 0);
 
-if (!$product_result) {
-    $product_query = "SELECT * FROM product";
-    $product_result = @mysqli_query($conn, $product_query);
+if (!$order_id) {
+    header("Location: order.php");
+    exit();
 }
 
-if ($product_result && mysqli_num_rows($product_result) > 0) {
-    while ($row = mysqli_fetch_assoc($product_result)) {
-        $products[] = $row;
-    }
+$u_stmt = $conn->prepare("SELECT UserName FROM orders WHERE OrderID = ?");
+$u_stmt->bind_param("i", $order_id);
+$u_stmt->execute();
+$selected_username = $u_stmt->get_result()->fetch_column();
+
+if (!$selected_username) {
+    header("Location: order.php");
+    exit();
 }
 
-$order_id = "";
-$selected_username = "";
-$selected_products = [];
-$selected_quantities = [];
 $error_msg = "";
+$selected_products = $_POST['product_id'] ?? [];
+$selected_quantities = $_POST['quantity'] ?? [];
 
-
-if (isset($_REQUEST['OrderID'])) {
-    $order_id = intval($_REQUEST['OrderID']);
-} else {
-    header("Location: order.php");
-    exit();
-}
-
-$order_stmt = $conn->prepare("SELECT * FROM orders WHERE OrderID = ?");
-$order_stmt->bind_param("i", $order_id);
-$order_stmt->execute();
-$order_res = $order_stmt->get_result();
-
-if ($order_row = $order_res->fetch_assoc()) {
-    $selected_username = $order_row['UserName'] ?? $order_row['username'] ?? '';
-} else {
-    header("Location: order.php");
-    exit();
-}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $posted_products = $_POST['product_id'] ?? [];
-    $posted_quantities = $_POST['quantity'] ?? [];
-    $selected_products = $posted_products;
-    $selected_quantities = $posted_quantities;
-
-    foreach ($posted_products as $p) {
-        if (empty($p)) {
-            $error_msg = "Please select a product for all rows.";
-            break;
-        }
+    if (in_array('', $selected_products)) $error_msg = "Please select a product for all rows.";
+    elseif (in_array('', $selected_quantities)) $error_msg = "Please select a quantity for all rows.";
+    elseif (count(array_filter($selected_products)) !== count(array_unique(array_filter($selected_products)))) {
+        $error_msg = "Product cannot be duplicate. Please check your selections.";
     }
-
-    if (empty($error_msg)) {
-        foreach ($posted_quantities as $q) {
-            if (empty($q)) {
-                $error_msg = "Please select a quantity for all rows.";
-                break;
-            }
-        }
-    }
-
-    if (empty($error_msg)) {
-        $non_empty = array_filter($posted_products);
-        if (count($non_empty) !== count(array_unique($non_empty))) {
-            $error_msg = "Product cannot be duplicate. Please check your selections.";
-        }
-    }
-
 
     if (empty($error_msg)) {
         $del_stmt = $conn->prepare("DELETE FROM order_details WHERE OrderID = ?");
         $del_stmt->bind_param("i", $order_id);
         $del_stmt->execute();
+        $ins_stmt = $conn->prepare("INSERT INTO order_details (OrderID, ProductName, Quantity, ProductPrice) VALUES (?, ?, ?, ?)");
+        $p_stmt = $conn->prepare("SELECT ProductName, Price FROM products WHERE ProductID = ?");
 
-        for ($i = 0; $i < count($posted_products); $i++) {
-            $p_id = $posted_products[$i];
-            $qty = intval($posted_quantities[$i]);
+        for ($i = 0; $i < count($selected_products); $i++) {
+            $p_id = $selected_products[$i];
+            $qty = intval($selected_quantities[$i]);
 
-            $p_name = "";
-            $p_price = 0;
+            if (!empty($p_id) && $qty > 0) {
+                $p_stmt->bind_param("i", $p_id);
+                $p_stmt->execute();
+                $p_info = $p_stmt->get_result()->fetch_assoc();
 
-            foreach ($products as $p) {
-                $cur_p_id = $p['ProductID'] ?? $p['product_id'] ?? 0;
-                if ($cur_p_id == $p_id) {
-                    $p_name = $p['ProductName'] ?? $p['Product Name'] ?? $p['product_name'] ?? $p['Name'] ?? 'Product';
-                    $p_price = $p['Price'] ?? $p['ProductPrice'] ?? $p['product_price'] ?? 0;
-                    break;
-                }
+                $ins_stmt->bind_param("isid", $order_id, $p_info['ProductName'], $qty, $p_info['Price']);
+                $ins_stmt->execute();
             }
-
-            $ins_stmt = $conn->prepare("INSERT INTO order_details (OrderID, ProductName, Quantity, ProductPrice) VALUES (?, ?, ?, ?)");
-            $ins_stmt->bind_param("isid", $order_id, $p_name, $qty, $p_price);
-            $ins_stmt->execute();
         }
 
         header("Location: order.php");
         exit();
     }
 } else {
-    $detail_stmt = $conn->prepare("SELECT * FROM order_details WHERE OrderID = ?");
-    $detail_stmt->bind_param("i", $order_id);
-    $detail_stmt->execute();
-    $detail_res = $detail_stmt->get_result();
+    $detail_sql = "SELECT p.ProductID, d.Quantity 
+                   FROM order_details d 
+                   LEFT JOIN products p ON d.ProductName = p.ProductName 
+                   WHERE d.OrderID = ?";
+    $d_stmt = $conn->prepare($detail_sql);
+    $d_stmt->bind_param("i", $order_id);
+    $d_stmt->execute();
+    $details = $d_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-    while ($d_row = $detail_res->fetch_assoc()) {
-        $p_name = $d_row['ProductName'] ?? '';
-        $matched_pid = '';
-        foreach ($products as $p) {
-            $cur_pname = $p['ProductName'] ?? $p['Product Name'] ?? $p['product_name'] ?? $p['Name'] ?? '';
-            if ($cur_pname == $p_name) {
-                $matched_pid = $p['ProductID'] ?? $p['product_id'] ?? '';
-                break;
-            }
-        }
-        $selected_products[] = $matched_pid;
-        $selected_quantities[] = $d_row['Quantity'] ?? 1;
+    foreach ($details as $d) {
+        $selected_products[] = $d['ProductID'] ?? '';
+        $selected_quantities[] = $d['Quantity'] ?? 1;
     }
 
     if (empty($selected_products)) {
@@ -373,11 +318,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
 
-            <a href="welcome.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+            <a href="dashboard.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
             <a href="products.php" class="sidebar_menu"><i class="fa-solid fa-cheese"></i>Products</a>
             <a href="order.php" class="sidebar_menu active"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
-            <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
+            <a href="logout.php" class="sidebar_menu" onclick="return confirm('Are you sure you want to log out?');">
+            <i class="fa-solid fa-door-open"></i>Sign Out</a>
         </div>
 
         <div class="main-content">

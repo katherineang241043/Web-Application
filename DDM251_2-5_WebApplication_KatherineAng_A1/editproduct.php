@@ -217,11 +217,12 @@ if (isset($_REQUEST['ProductID'])) {
     <div class="max-width">
         <div class="sidebar">
             <div class="sidebar_header">Kat Shop</div>
-            <a href="" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
+            <a href="dashboard.php" class="sidebar_menu"><i class="fa-solid fa-border-all"></i>Dashboard</a>
             <a href="customer.php" class="sidebar_menu"><i class="fa-solid fa-user"></i>Customers</a>
             <a href="products.php" class="sidebar_menu active"><i class="fa-solid fa-cheese"></i>Products</a>
             <a href="order.php" class="sidebar_menu"><i class="fa-solid fa-cart-shopping"></i>Orders</a>
-            <div class="sidebar_menu"><i class="fa-solid fa-door-open"></i>Sign Out</div>
+            <a href="logout.php" class="sidebar_menu" onclick="return confirm('Are you sure you want to log out?');">
+            <i class="fa-solid fa-door-open"></i>Sign Out</a>
         </div>
 
         <div class="main-content">

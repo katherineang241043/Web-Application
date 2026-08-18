@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($pword == $row['Password']) {
                 $_SESSION['email'] = $row['Email'];
-                header("location:welcome.php");
+                header("Location: dashboard.php");
                 exit();
             } else {
                 $error_message = "Incorrect password. Please try again.";
