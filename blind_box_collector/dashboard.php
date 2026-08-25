@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 登录验证
+
 if (!isset($_SESSION["email"])) {
     header("Location: index.php?warning=Please login first.");
     exit();
@@ -18,22 +18,18 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// 获取当前登录用户数据
+
 $session_email = $_SESSION["email"];
 $user_result = $conn->query("SELECT * FROM users WHERE email = '$session_email'");
 $user = $user_result->fetch_assoc();
 
-// 统计数据与推荐逻辑
-// 获取当前用户的收藏统计
 $user_id = $user["id"];
 $collection_result = $conn->query("SELECT COUNT(*) AS total_types, COALESCE(SUM(quantity), 0) AS total_draws FROM collection WHERE user_id = '$user_id'");
 $collection_stats = $collection_result->fetch_assoc();
 
-// 获取盲盒角色总数
 $character_result = $conn->query("SELECT COUNT(*) AS total FROM characters");
 $character_stats = $character_result->fetch_assoc();
 
-// 潮流盲盒推荐数据字典
 $recommendations = array(
     "Labubu" => "Hirono: another expressive character with a strong personality.",
     "Dimoo" => "Pucky: a dreamy series with soft colours and fantasy themes.",
@@ -43,7 +39,6 @@ $recommendations = array(
     "Crybaby" => "Labubu: playful, mischievous, and full of surprises."
 );
 
-// 提取喜好
 $favorite = isset($user["favorite_series"]) ? $user["favorite_series"] : "";
 $recommendation = isset($recommendations[$favorite]) ? $recommendations[$favorite] : "Complete your profile to receive a personalized series recommendation.";
 
