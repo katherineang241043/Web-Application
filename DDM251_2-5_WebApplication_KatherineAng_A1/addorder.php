@@ -1,73 +1,64 @@
 <?php
 session_start();
-
 if (!isset($_SESSION["email"])) {
     header("Location: login.php?error=Please login first.");
     exit();
 }
 
-$conn = new mysqli("localhost", "katshop", "katshop_123", "katshop");
-if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-
-$users = $conn->query("SELECT * FROM customers")->fetch_all(MYSQLI_ASSOC);
-$products = $conn->query("SELECT * FROM products")->fetch_all(MYSQLI_ASSOC);
-
-$errors = [];
-$selected_username = $_POST['username'] ?? '';
-$selected_products = $_POST['product_id'] ?? [''];
-$selected_quantities = $_POST['quantity'] ?? [''];
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (empty($selected_username)) $errors['username'] = "please seleted your username.";
-    if (in_array('', $selected_products)) $errors['product'] = "please seleted your product.";
-    if (in_array('', $selected_quantities)) $errors['quantity'] = "please seleted your quantity.";
-    
-
-    $valid_p = array_filter($selected_products);
-    if (count($valid_p) !== count(array_unique($valid_p))) {
-        $errors['duplicate'] = "product cannot be same.";
-    }
+$conn = mysqli_connect("localhost", "katshop", "katshop_123", "katshop");
 
 
-    if (empty($errors)) {
-        $u_stmt = $conn->prepare("SELECT Name FROM customers WHERE UserName = ?");
-        $u_stmt->bind_param("s", $selected_username);
-        $u_stmt->execute();
-        $user_data = $u_stmt->get_result()->fetch_assoc();
-        
-        $name_parts = explode(" ", $user_data['Name'] ?? '', 2);
-        $fn = $name_parts[0];
-        $ln = $name_parts[1] ?? '';
+$id_res = mysqli_query($conn, "SELECT MAX(CAST(OrderID AS UNSIGNED)) AS max_id FROM orders");
+$id_row = mysqli_fetch_array($id_res);
+$auto_order_id = ($id_row['max_id']) ? $id_row['max_id'] + 1 : 1001;
 
-        $order_date = date("Y-m-d H:i:s");
-        $stmt = $conn->prepare("INSERT INTO orders (UserName, FirstName, LastName, OrderDate) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $selected_username, $fn, $ln, $order_date);
 
-        if ($stmt->execute()) {
-            $new_order_id = $conn->insert_id;
-            $detail_stmt = $conn->prepare("INSERT INTO order_details (OrderID, ProductName, Quantity, ProductPrice) VALUES (?, ?, ?, ?)");
-            $p_stmt = $conn->prepare("SELECT ProductName, Price FROM products WHERE ProductID = ?");
+$users_result = mysqli_query($conn, "SELECT * FROM customers");
+$products_result = mysqli_query($conn, "SELECT * FROM products");
 
-            for ($i = 0; $i < count($selected_products); $i++) {
-                $p_id = $selected_products[$i];
-                $qty = intval($selected_quantities[$i]);
 
-                if (!empty($p_id) && $qty > 0) {
-                    $p_stmt->bind_param("i", $p_id);
-                    $p_stmt->execute();
-                    $p_info = $p_stmt->get_result()->fetch_assoc();
+$products = array();
+while ($row = mysqli_fetch_array($products_result)) {
+    $products[] = $row;
+}
 
-                    $detail_stmt->bind_param("isid", $new_order_id, $p_info['ProductName'], $qty, $p_info['Price']);
-                    $detail_stmt->execute();
-                }
-            }
 
-            header("Location: order.php");
-            exit();
-        } else {
-            $errors['db'] = "Error creating order: " . $conn->error;
+if (isset($_POST['username'])) {
+    $username = $_POST['username'];
+    $p_ids = $_POST['product_id'];
+    $qtys = $_POST['quantity'];
+
+
+    $user_res = mysqli_query($conn, "SELECT Name FROM customers WHERE UserName = '$username'");
+    $user_data = mysqli_fetch_array($user_res);
+    $name_parts = explode(" ", $user_data['Name'], 2);
+    $fn = $name_parts[0];
+    $ln = isset($name_parts[1]) ? $name_parts[1] : '';
+
+    $today = date("Y-m-d H:i:s");
+
+
+    $sql1 = "INSERT INTO orders (OrderID, UserName, FirstName, LastName, OrderDate) VALUES ('$auto_order_id', '$username', '$fn', '$ln', '$today')";
+    mysqli_query($conn, $sql1);
+
+    for ($i = 0; $i < count($p_ids); $i++) {
+        $pid = $p_ids[$i];
+        $qty = $qtys[$i];
+
+        if (!empty($pid) && !empty($qty)) {
+            $p_res = mysqli_query($conn, "SELECT ProductName, Price FROM products WHERE ProductID = '$pid'");
+            $p_data = mysqli_fetch_array($p_res);
+
+            $pname = $p_data['ProductName'];
+            $price = $p_data['Price'];
+
+            $sql2 = "INSERT INTO order_details (OrderID, ProductName, Quantity, ProductPrice) VALUES ('$auto_order_id', '$pname', '$qty', '$price')";
+            mysqli_query($conn, $sql2);
         }
     }
+
+    header("Location: order.php");
+    exit();
 }
 ?>
 
@@ -82,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;800;1,900&display=swap');
 
     * {
         margin: 0;
@@ -168,7 +159,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         color: #4B2E2B;
     }
 
-    select {
+    select, input[readonly] {
         padding: 10px 15px;
         border: 1px solid #C08552;
         border-radius: 8px;
@@ -177,6 +168,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         font-family: "Poppins", sans-serif;
         font-size: 15px;
         outline: none;
+    }
+
+    input[readonly] {
+        background-color: #e9e0d6;
+        color: #7a6865;
+        cursor: not-allowed;
     }
 
     .product-row {
@@ -253,15 +250,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         border-color: transparent;
     }
 
-    .error-text {
-        color: #ff0000;
-        font-size: 15px;
-        font-weight: 500;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        display: block;
-    }
-
     .custom-hr {
         border: 0;
         border-top: 1px solid #E6DFD7;
@@ -290,79 +278,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h1>Create Order</h1>
 
             <div class="form-container">
-                <?php if (isset($errors['db'])): ?>
-                    <div class="error-text"><?php echo $errors['db']; ?></div>
-                <?php endif; ?>
+                <form action="" method="POST">
 
-                <form action="addorder.php" method="POST">
+                    <div class="form-group">
+                        <label for="order_id" style="display:inline-block; width: 100px;">OrderID:</label>
+                        <input type="text" id="order_id" name="order_id" value="<?php echo $auto_order_id; ?>" readonly>
+                    </div>
+
                     <div class="form-group">
                         <label for="username" style="display:inline-block; width: 100px;">Username:</label>
-                        <select name="username" id="username">
+                        <select name="username" id="username" required>
                             <option value=""><-- Selected Username --></option>
-                            <?php foreach ($users as $user): 
-                                $uname = $user['UserName'] ?? $user['Username'] ?? '';
-                                $selected = ($selected_username == $uname) ? 'selected' : '';
-                            ?>
-                                <option value="<?php echo htmlspecialchars($uname); ?>" <?php echo $selected; ?>>
-                                    <?php echo htmlspecialchars($uname); ?>
-                                </option>
-                            <?php endforeach; ?>
+                            <?php while ($u = mysqli_fetch_array($users_result)) { ?>
+                                <option value="<?php echo $u['UserName']; ?>"><?php echo $u['UserName']; ?></option>
+                            <?php } ?>
                         </select>
-
-
-                        <?php if (isset($errors['username'])): ?>
-                            <div class="error-text"><?php echo $errors['username']; ?></div>
-                        <?php endif; ?>
                     </div>
-
 
                     <div id="product-container">
-                        <?php 
-                        $row_count = max(count($selected_products), 1);
-                        for ($idx = 0; $idx < $row_count; $idx++): 
-                            $cur_p = $selected_products[$idx] ?? '';
-                            $cur_q = $selected_quantities[$idx] ?? '';
-                        ?>
-                            <div class="product-row">
-                                <label>Product:</label>
-                                <select name="product_id[]">
-                                    <option value=""><-- Selected Product --></option>
-                                    <?php foreach ($products as $prod): 
-                                        $pid = $prod['ProductID'] ?? $prod['product_id'] ?? '';
-                                        $pname = $prod['ProductName'] ?? $prod['Product Name'] ?? $prod['product_name'] ?? $prod['Name'] ?? 'Product';
-                                        $pprice = $prod['Price'] ?? $prod['ProductPrice'] ?? $prod['product_price'] ?? 0;
-                                        $p_selected = ($cur_p == $pid) ? 'selected' : '';
-                                    ?>
-                                        <option value="<?php echo $pid; ?>" <?php echo $p_selected; ?>>
-                                            <?php echo htmlspecialchars($pname) . " (RM " . number_format($pprice, 2) . ")"; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                        <div class="product-row">
+                            <label>Product:</label>
+                            <select name="product_id[]" required>
+                                <option value=""><-- Selected Product --></option>
+                                <?php foreach ($products as $p) { ?>
+                                    <option value="<?php echo $p['ProductID']; ?>">
+                                        <?php echo $p['ProductName'] . " (RM " . number_format($p['Price'], 2) . ")"; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
 
-                                <label style="margin-left: 10px;">Quantity:</label>
-                                <select name="quantity[]">
-                                    <option value=""><-- Selected Quantity --></option>
-                                    <?php for ($q = 1; $q <= 20; $q++): 
-                                        $q_selected = ($cur_q == $q) ? 'selected' : '';
-                                    ?>
-                                        <option value="<?php echo $q; ?>" <?php echo $q_selected; ?>><?php echo $q; ?></option>
-                                    <?php endfor; ?>
-                                </select>
-                            </div>
-                        <?php endfor; ?>
+                            <label style="margin-left: 10px;">Quantity:</label>
+                            <select name="quantity[]" required>
+                                <option value=""><-- Selected Quantity --></option>
+                                <?php for ($q = 1; $q <= 20; $q++) { ?>
+                                    <option value="<?php echo $q; ?>"><?php echo $q; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
                     </div>
-
-                    <?php if (isset($errors['product'])): ?>
-                        <div class="error-text"><?php echo $errors['product']; ?></div>
-                    <?php endif; ?>
-
-                    <?php if (isset($errors['quantity'])): ?>
-                        <div class="error-text"><?php echo $errors['quantity']; ?></div>
-                    <?php endif; ?>
-
-                    <?php if (isset($errors['duplicate'])): ?>
-                        <div class="error-text"><?php echo $errors['duplicate']; ?></div>
-                    <?php endif; ?>
 
                     <div class="btn-action-group">
                         <button type="button" class="btn-btn btn-add" onclick="addProductRow()"><i class="fa-solid fa-plus"></i> ADD</button>

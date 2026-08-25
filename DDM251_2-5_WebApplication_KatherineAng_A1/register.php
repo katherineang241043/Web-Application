@@ -1,63 +1,70 @@
 <?php
 session_start();
 
-$error_message = "";
-$keep_username   = "";
-$keep_name       = "";
-$keep_email      = "";
-$keep_phone      = "";
+$error_message  = "";
+$keep_username  = "";
+$keep_password  = "";
+$keep_cpassword = "";
+$keep_name      = "";
+$keep_email     = "";
+$keep_phone     = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $conn = new mysqli("localhost", "katshop", "katshop_123", "katshop");
+    $conn = mysqli_connect("localhost", "katshop", "katshop_123", "katshop");
 
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
     }
 
-    $uname = trim($_POST['username'] ?? '');
-    $pword = trim($_POST['password'] ?? '');
-    $name  = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
+    $uname  = trim($_POST['username']);
+    $pword  = trim($_POST['password']);
+    $cpword = trim($_POST['confirm_password']);
+    $name   = trim($_POST['name']);
+    $email  = trim($_POST['email']);
+    $phone  = trim($_POST['phone']);
 
-    $keep_username   = htmlspecialchars($uname);
-    $keep_name       = htmlspecialchars($name);
-    $keep_email      = htmlspecialchars($email);
-    $keep_phone      = htmlspecialchars($phone);
+    $keep_username  = $uname;
+    $keep_password  = $pword;
+    $keep_cpassword = $cpword;
+    $keep_name      = $name;
+    $keep_email     = $email;
+    $keep_phone     = $phone;
 
-    if (empty($uname) || empty($pword) || empty($name) || empty($email) || empty($phone)) {
+
+    if ($uname == "" || $pword == "" || $cpword == "" || $name == "" || $email == "" || $phone == "") {
         $error_message = "Please fill in all required fields.";
-    } else {
-        $check_stmt = $conn->prepare("SELECT CustomerID FROM customers WHERE UserName = ? OR Email = ?");
-        $check_stmt->bind_param("ss", $uname, $email);
-        $check_stmt->execute();
-        $check_res = $check_stmt->get_result();
+    } 
+    elseif ($pword != $cpword) {
+        $error_message = "Passwords do not match.";
+    } 
+    else {
+        $check_query = "SELECT CustomerID FROM customers WHERE UserName = '$uname' OR Email = '$email'";
+        $check_res = mysqli_query($conn, $check_query);
 
-        if ($check_res->num_rows > 0) {
+        if (mysqli_num_rows($check_res) > 0) {
             $error_message = "Username or Email already exists.";
         } else {
             $id_query = "SELECT MAX(CAST(CustomerID AS UNSIGNED)) AS max_id FROM customers";
-            $id_result = $conn->query($id_query);
-            $row = $id_result->fetch_assoc();
+            $id_result = mysqli_query($conn, $id_query);
+            $row = mysqli_fetch_assoc($id_result);
             
             if ($row['max_id']) {
                 $new_customer_id = $row['max_id'] + 1;
             } else {
                 $new_customer_id = 1001;
             }
+            $insert_query = "INSERT INTO customers (CustomerID, UserName, Name, Email, PhoneNumber, Password) 
+                            VALUES ('$new_customer_id', '$uname', '$name', '$email', '$phone', '$pword')";
 
-            $stmt = $conn->prepare("INSERT INTO customers (CustomerID, UserName, Name, Email, PhoneNumber, Password) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("isssss", $new_customer_id, $uname, $name, $email, $phone, $pword);
-
-            if ($stmt->execute()) {
+            if (mysqli_query($conn, $insert_query)) {
                 header("Location: login.php");
                 exit();
             } else {
-                $error_message = "Error creating account: " . $conn->error;
+                $error_message = "Error creating account: " . mysqli_error($conn);
             }
         }
     }
-    $conn->close();
+    mysqli_close($conn);
 }
 ?>
 
@@ -68,6 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
@@ -77,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         body {
-            margin: 40px 70px;
+            margin: 30px 70px;
             font-family: "Poppins", sans-serif;
             font-size: 14px;
             background-color: #ffffff;
@@ -86,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .login {
             background-color: #4B2E2B;
             max-width: 480px;
-            padding: 40px 48px;
+            padding: 35px 48px;
             margin: auto;
             border-radius: 20px;
         }
@@ -99,35 +107,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .login_info {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .login_info div {
             display: flex;
             gap: 15px;
-            padding: 6px 0;
+            padding: 5px 0;
             align-items: center;
         }
 
         .login_info label {
             width: 38%;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: #C08552;
             line-height: 1.2;
         }
 
+        .input-box {
+            position: relative;
+            width: 62%;
+        }
+
         .login_info input {
             background-color: #FFF8F0;
-            width: 62%;
+            width: 100%;
             height: 38px;
             padding: 10px;
+            padding-right: 35px;
             border-radius: 8px;
             border: none;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #4B2E2B;
+            font-size: 14px;
         }
 
         .btn {
@@ -182,33 +206,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <div class="login">
-        <form target="_self" method="POST">
+        <form method="POST" autocomplete="off">
             <div class="error"><?php echo $error_message; ?></div>
 
             <div class="login_info">
                 <div>
                     <label>Username:</label>
-                    <input type="text" name="username" value="<?php echo $keep_username; ?>" required>
+                    <div class="input-box">
+                        <input type="text" name="username" value="<?php echo $keep_username; ?>" autocomplete="off">
+                    </div>
                 </div>
 
                 <div>
                     <label>Password:</label>
-                    <input type="password" name="password" required>
+                    <div class="input-box">
+                        <input type="password" id="pword" name="password" value="<?php echo $keep_password; ?>" autocomplete="new-password">
+                        <i class="fa-regular fa-eye toggle-password" onclick="toggleVisibility('pword', this)"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Confirm Password:</label>
+                    <div class="input-box">
+                        <input type="password" id="cpword" name="confirm_password" value="<?php echo $keep_cpassword; ?>" autocomplete="new-password">
+                        <i class="fa-regular fa-eye toggle-password" onclick="toggleVisibility('cpword', this)"></i>
+                    </div>
                 </div>
 
                 <div>
                     <label>Name:</label>
-                    <input type="text" name="name" value="<?php echo $keep_name; ?>" required>
+                    <div class="input-box">
+                        <input type="text" name="name" value="<?php echo $keep_name; ?>" autocomplete="off">
+                    </div>
                 </div>
 
                 <div>
                     <label>Email:</label>
-                    <input type="email" name="email" value="<?php echo $keep_email; ?>" required>
+                    <input class="input-box" style="display:none;">
+                    <div class="input-box">
+                        <input type="email" name="email" value="<?php echo $keep_email; ?>" autocomplete="off">
+                    </div>
                 </div>
 
                 <div>
                     <label>Phone Number:</label>
-                    <input type="text" name="phone" value="<?php echo $keep_phone; ?>" required>
+                    <div class="input-box">
+                        <input type="text" name="phone" value="<?php echo $keep_phone; ?>" autocomplete="off">
+                    </div>
                 </div>
             </div>
 
@@ -221,6 +265,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </form>
     </div>
+
+    <script>
+        function toggleVisibility(inputId, icon) {
+            var input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.className = "fa-regular fa-eye-slash toggle-password";
+            } else {
+                input.type = "password";
+                icon.className = "fa-regular fa-eye toggle-password";
+            }
+        }
+    </script>
 </body>
 
 </html>

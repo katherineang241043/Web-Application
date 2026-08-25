@@ -5,26 +5,29 @@ $keep_username = "";
 $error_message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $conn = new mysqli("localhost", "katshop", "katshop_123", "katshop");
+    $conn = mysqli_connect("localhost", "katshop", "katshop_123", "katshop");
 
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
     }
 
-    $uname = trim($_POST['username'] ?? '');
-    $pword = trim($_POST['password'] ?? '');
-    $keep_username = htmlspecialchars($uname);
+    $uname = trim($_POST['username']);
+    $pword = trim($_POST['password']);
+    $keep_username = $uname;
 
-    if (empty($uname) || empty($pword)) {
+
+    if ($uname == "" && $pword == "") {
         $error_message = "Please enter your Username and Password.";
+    } elseif ($uname == "") {
+        $error_message = "Please enter your Username.";
+    } elseif ($pword == "") {
+        $error_message = "Please enter your Password.";
     } else {
-        $stmt = $conn->prepare("SELECT Email, Password FROM customers WHERE username = ?");
-        $stmt->bind_param("s", $uname);
-        $stmt->execute();
-        $res = $stmt->get_result();
+        $sql = "SELECT Email, Password FROM customers WHERE UserName = '$uname'";
+        $result = mysqli_query($conn, $sql);
 
-        if ($row = $res->fetch_assoc()) {
-            if ($pword === $row['Password']) {
+        if ($row = mysqli_fetch_assoc($result)) {
+            if ($pword == $row['Password']) {
                 $_SESSION['email'] = $row['Email'];
                 header("Location: dashboard.php");
                 exit();
@@ -35,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_message = "Username not found.";
         }
     }
-    $conn->close();
+    mysqli_close($conn);
 }
 ?>
 
@@ -46,6 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
@@ -159,18 +163,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <div class="login">
-        <form target="_self" method="POST">
+        <form method="POST" autocomplete="off">
             <div class="error"><?php echo $error_message; ?></div>
             
             <div class="login_info">
                 <div>
                     <label>Username:</label>
-                    <input type="text" name="username" value="<?php echo $keep_username; ?>">
+                    <input type="text" name="username" value="<?php echo $keep_username; ?>" autocomplete="off">
                 </div>
 
                 <div>
                     <label>Password:</label>
-                    <input type="password" name="password">
+                    <div style="position: relative; width: 67%; padding: 0; gap: 0;">
+                        <input type="password" id="pword" name="password" autocomplete="new-password" style="width: 100%; padding-right: 35px;">
+                        <i class="fa-regular fa-eye" onclick="toggleVisibility('pword', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #4B2E2B;"></i>
+                    </div>
                 </div>
             </div>
 
@@ -183,6 +190,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </form>
     </div>
+
+    <script>
+        function toggleVisibility(inputId, icon) {
+            var input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.className = "fa-regular fa-eye-slash";
+            } else {
+                input.type = "password";
+                icon.className = "fa-regular fa-eye";
+            }
+        }
+    </script>
 </body>
 
 </html>
