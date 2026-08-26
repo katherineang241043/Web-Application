@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-
 if (!isset($_SESSION["email"])) {
     header("Location: index.php?warning=Please login first.");
     exit();
@@ -18,89 +17,149 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+mysqli_set_charset($conn, "utf8mb4");
 
-$session_email = $_SESSION["email"];
-$user_result = $conn->query("SELECT * FROM users WHERE email = '$session_email'");
-$user = $user_result->fetch_assoc();
-
+$session_email = mysqli_real_escape_string($conn, $_SESSION["email"]);
+$user_query = "SELECT * FROM users WHERE email = '$session_email'";
+$user_result = mysqli_query($conn, $user_query);
+$user = mysqli_fetch_assoc($user_result);
 $user_id = $user["id"];
-$collection_result = $conn->query("SELECT COUNT(*) AS total_types, COALESCE(SUM(quantity), 0) AS total_draws FROM collection WHERE user_id = '$user_id'");
-$collection_stats = $collection_result->fetch_assoc();
 
-$character_result = $conn->query("SELECT COUNT(*) AS total FROM characters");
-$character_stats = $character_result->fetch_assoc();
+$collected_count = 0;
+$total_draws = 0;
+$collection_query = "SELECT * FROM collection WHERE user_id = '$user_id'";
+$collection_result = mysqli_query($conn, $collection_query);
 
-$recommendations = array(
-    "Labubu" => "Hirono: another expressive character with a strong personality.",
-    "Dimoo" => "Pucky: a dreamy series with soft colours and fantasy themes.",
-    "Hirono" => "Skullpanda: a stylish series with emotional storytelling.",
-    "Molly" => "Dimoo: a colourful world filled with imagination.",
-    "Skullpanda" => "Crybaby: bold designs with expressive moods.",
-    "Crybaby" => "Labubu: playful, mischievous, and full of surprises."
-);
+while ($collection_row = mysqli_fetch_assoc($collection_result)) {
+    $collected_count++;
+    $total_draws = $total_draws + $collection_row["quantity"];
+}
 
-$favorite = isset($user["favorite_series"]) ? $user["favorite_series"] : "";
-$recommendation = isset($recommendations[$favorite]) ? $recommendations[$favorite] : "Complete your profile to receive a personalized series recommendation.";
+$character_query = "SELECT * FROM characters";
+$character_result = mysqli_query($conn, $character_query);
+$total_characters = mysqli_num_rows($character_result);
 
-$page_title = "Collector Home";
-$active_page = "home";
+$favorite = $user["favorite_series"];
+$favorite_display = $favorite;
 
-include "header.php";
+if ($favorite == "") {
+    $favorite_display = "Not Set";
+    $recommendation = "Complete your profile to receive a personalized series recommendation.";
+} else if ($favorite == "Labubu") {
+    $recommendation = "Hirono: another expressive character with a strong personality.";
+} else if ($favorite == "Dimoo") {
+    $recommendation = "Pucky: a dreamy series with soft colours and fantasy themes.";
+} else if ($favorite == "Hirono") {
+    $recommendation = "Skullpanda: a stylish series with emotional storytelling.";
+} else if ($favorite == "Molly") {
+    $recommendation = "Dimoo: a colourful world filled with imagination.";
+} else if ($favorite == "Skullpanda") {
+    $recommendation = "Crybaby: bold designs with expressive moods.";
+} else {
+    $recommendation = "Labubu: playful, mischievous, and full of surprises.";
+}
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collector Home | Pop Mart Collector</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="dashboard.php">
+            <span class="brand-box">?</span>
+            <span>POP &amp; REVEAL</span>
+        </a>
 
-<section class="hero">
-    <div>
-        <p class="eyebrow">YOUR COLLECTOR SPACE</p>
-        <h1>Welcome, <?php echo htmlspecialchars(isset($user["username"]) ? $user["username"] : $user["full_name"]); ?>!</h1>
-        <p>Ready for another surprise? Every box could be your first Secret character.</p>
-        <div class="hero-actions">
-            <a class="btn btn-primary" href="open_box.php">Open a Blind Box</a>
-            <a class="btn btn-outline" href="collection.php">View Collection</a>
-        </div>
-    </div>
-    <div class="hero-box"><span>?</span><small>WHAT'S INSIDE?</small></div>
-</section>
+        <nav class="nav-links">
+            <a class="active" href="dashboard.php"><span class="nav-icon">&#8962;</span><span class="nav-label">Home</span></a>
+            <a href="open_box.php"><span class="nav-icon">?</span><span class="nav-label">Open</span></a>
+            <a href="collection.php"><span class="nav-icon">&#9638;</span><span class="nav-label">Collection</span></a>
+            <a href="profile.php"><span class="nav-icon">&#9786;</span><span class="nav-label">Profile</span></a>
+            <a class="logout-link" href="logout.php"><span class="nav-icon">&#8594;</span><span class="nav-label">Logout</span></a>
+        </nav>
+    </header>
 
-<?php if ($favorite === "") { ?>
-    <div class="message warning-message">Your collector profile is incomplete. <a href="profile.php">Add your preferences now</a>.</div>
-<?php } ?>
+    <main class="page-container">
+        <section class="hero">
+            <div class="hero-content">
+                <p class="eyebrow">YOUR COLLECTOR SPACE</p>
+                <h1>Welcome, <?php echo htmlspecialchars($user["full_name"]); ?>!</h1>
+                <p>Ready for another surprise? Every box could be your first Secret character.</p>
 
-<section class="stats-grid">
-    <article class="stat-card coral">
-        <span class="stat-icon">&#9733;</span>
-        <div><strong><?php echo $collection_stats["total_types"]; ?> / <?php echo $character_stats["total"]; ?></strong><p>Characters Collected</p></div>
-    </article>
-    <article class="stat-card yellow">
-        <span class="stat-icon">&#9635;</span>
-        <div><strong><?php echo $collection_stats["total_draws"]; ?></strong><p>Total Boxes Opened</p></div>
-    </article>
-    <article class="stat-card blue">
-        <span class="stat-icon">&#9829;</span>
-        <div><strong><?php echo $favorite !== "" ? htmlspecialchars($favorite) : "Not Set"; ?></strong><p>Favourite Series</p></div>
-    </article>
-</section>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="open_box.php">Open a Blind Box</a>
+                    <a class="btn btn-outline" href="collection.php">View Collection</a>
+                </div>
+            </div>
 
-<section class="content-grid">
-    <article class="panel recommendation-panel">
-        <p class="eyebrow">PERSONALIZED FOR YOU</p>
-        <h2>Because you like <?php echo $favorite !== "" ? htmlspecialchars($favorite) : "blind boxes"; ?>...</h2>
-        <p><?php echo htmlspecialchars($recommendation); ?></p>
-        <a href="open_box.php">Try your luck &rarr;</a>
-    </article>
+            <div class="hero-box">
+                <span>?</span>
+                <small>WHAT'S INSIDE?</small>
+            </div>
+        </section>
 
-    <article class="panel rarity-panel">
-        <p class="eyebrow">DROP RATES</p>
-        <h2>Every box is a surprise</h2>
-        <div class="rarity-row"><span>Common</span><strong>70%</strong></div>
-        <div class="rate-bar"><i style="width:70%"></i></div>
-        <div class="rarity-row"><span>Rare</span><strong>25%</strong></div>
-        <div class="rate-bar rare-rate"><i style="width:25%"></i></div>
-        <div class="rarity-row"><span>Secret</span><strong>5%</strong></div>
-        <div class="rate-bar secret-rate"><i style="width:5%"></i></div>
-    </article>
-</section>
+        <?php if ($favorite == "") { ?>
+            <div class="message warning-message">Your collector profile is incomplete. <a href="profile.php">Add your preferences now</a>.</div>
+        <?php } ?>
 
-<?php 
-$conn->close();
-include "footer.php"; 
-?>
+        <section class="stats-grid">
+            <article class="stat-card coral">
+                <span class="stat-icon">&#9733;</span>
+                <div>
+                    <strong><?php echo $collected_count; ?> / <?php echo $total_characters; ?></strong>
+                    <p>Characters Collected</p>
+                </div>
+            </article>
+
+            <article class="stat-card yellow">
+                <span class="stat-icon">&#9635;</span>
+                <div>
+                    <strong><?php echo $total_draws; ?></strong>
+                    <p>Total Boxes Opened</p>
+                </div>
+            </article>
+
+            <article class="stat-card blue">
+                <span class="stat-icon">&#9829;</span>
+                <div>
+                    <strong><?php echo htmlspecialchars($favorite_display); ?></strong>
+                    <p>Favourite Series</p>
+                </div>
+            </article>
+        </section>
+
+        <section class="content-grid">
+            <article class="panel recommendation-panel">
+                <p class="eyebrow">PERSONALIZED FOR YOU</p>
+
+                <?php if ($favorite == "") { ?>
+                    <h2>Your next favourite series...</h2>
+                <?php } else { ?>
+                    <h2>Because you like <?php echo htmlspecialchars($favorite); ?>...</h2>
+                <?php } ?>
+
+                <p><?php echo htmlspecialchars($recommendation); ?></p>
+                <a href="open_box.php">Try your luck &rarr;</a>
+            </article>
+
+            <article class="panel rarity-panel">
+                <p class="eyebrow">DROP RATES</p>
+                <h2>Every box is a surprise</h2>
+
+                <div class="rarity-row"><span>Common</span><strong>98.75%</strong></div>
+                <div class="rate-bar"><i class="common-width"></i></div>
+
+                <div class="rarity-row"><span>Secret (1 / 80)</span><strong>1.25%</strong></div>
+                <div class="rate-bar secret-rate"><i class="secret-width"></i></div>
+            </article>
+        </section>
+    </main>
+
+    <footer>Student Assignment - Pop Mart Blind Box Collector</footer>
+</body>
+</html>
+<?php mysqli_close($conn); ?>

@@ -1,37 +1,53 @@
 <?php
 session_start();
-include "config.php";
+
+$servername = "localhost";
+$username = "popmart_collector";
+$password = "pop123";
+$dbname = "popmart_collector";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+mysqli_set_charset($conn, "utf8mb4");
 
 $error_message = "";
 $full_name = "";
 $email = "";
 $phone = "";
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $full_name = $_POST["full_name"];
     $email = $_POST["email"];
     $phone = $_POST["phone"];
-    $password = $_POST["password"];
+    $new_password = $_POST["password"];
     $confirm_password = $_POST["confirm_password"];
 
-    if ($full_name == "" || $email == "" || $phone == "" || $password == "" || $confirm_password == "") {
+    if (empty($full_name) || empty($email) || empty($phone) || empty($new_password) || empty($confirm_password)) {
         $error_message = "Please fill in all required fields.";
-    } else if ($password != $confirm_password) {
+    } else if ($new_password != $confirm_password) {
         $error_message = "Passwords do not match.";
-    } else if (strlen($password) < 6) {
+    } else if (strlen($new_password) < 6) {
         $error_message = "Password must contain at least 6 characters.";
     } else {
-        $check_sql = "SELECT * FROM users WHERE email = '$email'";
-        $check_res = mysqli_query($conn, $check_sql);
+        $safe_name = mysqli_real_escape_string($conn, $full_name);
+        $safe_email = mysqli_real_escape_string($conn, $email);
+        $safe_phone = mysqli_real_escape_string($conn, $phone);
+        $safe_password = mysqli_real_escape_string($conn, $new_password);
 
-        if (mysqli_num_rows($check_res) > 0) {
+        $check_query = "SELECT * FROM users WHERE email = '$safe_email'";
+        $check_result = mysqli_query($conn, $check_query);
+
+        if (mysqli_num_rows($check_result) > 0) {
             $error_message = "This email is already registered.";
         } else {
-            $sql = "INSERT INTO users (full_name, email, phone, password) 
-                    VALUES ('$full_name', '$email', '$phone', '$password')";
+            $insert_query = "INSERT INTO users (full_name, email, phone, password)
+                             VALUES ('$safe_name', '$safe_email', '$safe_phone', '$safe_password')";
 
-            if (mysqli_query($conn, $sql)) {
+            if (mysqli_query($conn, $insert_query)) {
                 header("Location: index.php?success=Account created successfully. Please login.");
                 exit();
             } else {
@@ -55,10 +71,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span class="brand-box">?</span>
             <span>POP &amp; REVEAL</span>
         </a>
+
         <p class="eyebrow">JOIN THE CLUB</p>
         <h1>Create your collector account</h1>
         <p class="muted">Start with the basic information required by the assignment.</p>
-
 
         <?php if ($error_message != "") { ?>
             <div class="message error-message"><?php echo $error_message; ?></div>
@@ -67,17 +83,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="POST" action="register.php" class="two-column-form">
             <div class="form-group">
                 <label for="full_name">Full Name</label>
-                <input id="full_name" type="text" name="full_name" value="<?php echo $full_name; ?>" required>
+                <input id="full_name" type="text" name="full_name" value="<?php echo htmlspecialchars($full_name); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input id="email" type="email" name="email" value="<?php echo $email; ?>" required>
+                <input id="email" type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="phone">Phone Number</label>
-                <input id="phone" type="tel" name="phone" value="<?php echo $phone; ?>" required>
+                <input id="phone" type="tel" name="phone" value="<?php echo htmlspecialchars($phone); ?>" required>
             </div>
 
             <div class="form-group">
