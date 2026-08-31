@@ -77,7 +77,7 @@ if ($favorite == "") {
     <header class="topbar">
         <a class="brand" href="dashboard.php">
             <span class="brand-box">?</span>
-            <span>POP &amp; REVEAL</span>
+            <span>POP & REVEAL</span>
         </a>
 
         <nav class="nav-links">

@@ -26,7 +26,7 @@ $draw_was_free = false;
 $error_message = "";
 $drawn_character = array();
 
-// Count only this user's draws for today's date.
+// count only this user's draws for today's date.
 $today = date("Y-m-d");
 $today_query = "SELECT * FROM draw_history WHERE user_id = '$user_id' AND draw_date = '$today'";
 $today_result = mysqli_query($conn, $today_query);
@@ -38,7 +38,7 @@ if ($draws_left < 0) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // A user cannot make a fifth draw on the same day.
+    // user cannot make a fifth draw on the same day.
     if ($today_draws >= 4) {
         $error_message = "You have used all 4 draws for today. Come back tomorrow!";
     } else {
@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (mysqli_num_rows($character_result) > 0) {
             $drawn_character = mysqli_fetch_assoc($character_result);
 
-            // The first draw each day is the Daily Free Draw.
+            // first draw each day is the Daily Free Draw.
             $is_free = 0;
 
             if ($today_draws == 0) {

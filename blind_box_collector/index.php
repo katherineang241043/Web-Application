@@ -57,13 +57,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Pop &amp; Reveal</title>
+    <title>Login | Pop & Reveal</title>
     <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body class="auth-body">
     <div class="auth-layout">
         <section class="auth-art">
-            <div class="mini-label">COLLECT &bull; REVEAL &bull; REPEAT</div>
+            <div class="mini-label">COLLECT • REVEAL • REPEAT</div>
             <h1>Your next surprise is waiting.</h1>
             <p>Sign in, tell us your favourite series, and build your own digital blind box collection.</p>
 
@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="auth-form-wrap">
                 <a class="brand dark-brand" href="index.php">
                     <span class="brand-box">?</span>
-                    <span>POP &amp; REVEAL</span>
+                    <span>POP & REVEAL</span>
                 </a>
 
                 <p class="eyebrow">MEMBER LOGIN</p>
@@ -108,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input id="password" type="password" name="password" placeholder="Enter your password" required>
                     </div>
 
-                    <button class="btn btn-primary full-button" type="submit">Login &amp; Start Collecting</button>
+                    <button class="btn btn-primary full-button" type="submit">Login & Start Collecting</button>
                 </form>
 
                 <p class="form-switch">New collector? <a href="register.php">Create an account</a></p>

@@ -62,7 +62,7 @@ if ($total_characters > 0) {
 </head>
 <body>
     <header class="topbar">
-        <a class="brand" href="dashboard.php"><span class="brand-box">?</span><span>POP &amp; REVEAL</span></a>
+        <a class="brand" href="dashboard.php"><span class="brand-box">?</span><span>POP & REVEAL</span></a>
 
         <nav class="nav-links">
             <a href="dashboard.php"><span class="nav-icon">&#8962;</span><span class="nav-label">Home</span></a>
@@ -87,7 +87,7 @@ if ($total_characters > 0) {
         <section class="progress-panel panel">
             <div class="progress-copy">
                 <strong><?php echo $collected_count; ?> / <?php echo $total_characters; ?> characters</strong>
-                <span><?php echo $progress; ?>% complete &bull; <?php echo $total_draws; ?> total draws</span>
+                <span><?php echo $progress; ?>% complete • <?php echo $total_draws; ?> total draws</span>
             </div>
 
             <div class="collection-progress">

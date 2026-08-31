@@ -74,7 +74,7 @@ $user = mysqli_fetch_assoc($user_result);
 </head>
 <body>
     <header class="topbar">
-        <a class="brand" href="dashboard.php"><span class="brand-box">?</span><span>POP &amp; REVEAL</span></a>
+        <a class="brand" href="dashboard.php"><span class="brand-box">?</span><span>POP & REVEAL</span></a>
 
         <nav class="nav-links">
             <a href="dashboard.php"><span class="nav-icon">&#8962;</span><span class="nav-label">Home</span></a>

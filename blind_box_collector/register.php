@@ -62,14 +62,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register | Pop &amp; Reveal</title>
+    <title>Register | Pop & Reveal</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="auth-body register-body">
     <div class="simple-auth-card">
         <a class="brand dark-brand" href="index.php">
             <span class="brand-box">?</span>
-            <span>POP &amp; REVEAL</span>
+            <span>POP & REVEAL</span>
         </a>
 
         <p class="eyebrow">JOIN THE CLUB</p>
