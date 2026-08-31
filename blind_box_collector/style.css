@@ -606,6 +606,43 @@ footer {
     font-weight: bold;
 }
 
+.daily-draw-panel {
+    margin-top: 22px;
+    padding: 19px;
+    background-color: #fff7cc;
+    border: 2px solid #17191f;
+    box-shadow: 5px 5px 0 #ffd84d;
+}
+
+.daily-title {
+    margin: 0 0 5px;
+    color: #ff5b55;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.draw-counter-row {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.free-available {
+    color: #16704f;
+}
+
+.free-used {
+    color: #9e2723;
+}
+
+.draws-left {
+    margin: 14px 0 0;
+    color: #6f7077;
+    font-size: 12px;
+}
+
 .blind-box {
     width: 270px;
     height: 310px;
@@ -639,6 +676,16 @@ footer {
     font-size: 17px;
 }
 
+.disabled-button,
+.disabled-button:hover {
+    color: #777980;
+    background-color: #dedbd4;
+    border-color: #c8c5bf;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .tiny-note {
     color: #6f7077;
     font-size: 12px;
@@ -661,6 +708,25 @@ footer {
 .result-card.secret {
     background-color: #fff7cc;
     box-shadow: 12px 12px 0 #ff5b55;
+}
+
+.result-heading {
+    margin: 0 0 15px;
+    color: #ff5b55;
+    font-family: "Space Grotesk", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.result-image {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 1 / 1;
+    margin: 18px auto 22px;
+    display: block;
+    object-fit: cover;
+    border: 4px solid #17191f;
+    background-color: white;
 }
 
 .character-circle {
@@ -721,6 +787,15 @@ footer {
     background-color: #dff5ec;
 }
 
+.free-draw-message {
+    margin-top: 15px;
+    padding: 10px;
+    color: #715900;
+    background-color: #fff0b4;
+    font-size: 13px;
+    font-weight: bold;
+}
+
 .secret-message {
     color: #9e2723;
     background-color: #ffd9d7;
@@ -731,6 +806,11 @@ footer {
     display: flex;
     justify-content: center;
     gap: 14px;
+}
+
+.result-limit-message {
+    max-width: 430px;
+    margin: 20px auto 0;
 }
 
 .reveal-animation {
@@ -837,6 +917,13 @@ footer {
     font-family: "Space Grotesk", Arial, sans-serif;
     font-size: 68px;
     font-weight: bold;
+}
+
+.card-image>img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
 }
 
 .card-image .rarity-badge {
@@ -1024,39 +1111,111 @@ footer {
         min-height: 100vh;
         padding-bottom: 0;
         background-color: #f7f4ee;
+        overflow-x: hidden;
     }
 
     .auth-layout {
         min-height: 100vh;
         display: block;
+        background: linear-gradient(#17191f 0 360px, #f7f4ee 360px 100%);
     }
 
     .auth-art {
+        width: 100%;
+        height: 260px;
+        min-height: 260px;
+        padding: 26px 22px;
+        display: block;
+    }
+
+    .auth-art .eyebrow {
+        margin: 0;
+        font-size: 10px;
+    }
+
+    .auth-art h1 {
+        max-width: 215px;
+        margin: 15px 0 0;
+        font-size: 33px;
+        line-height: 1;
+    }
+
+    .auth-art>p:last-of-type {
         display: none;
     }
 
+    .box-scene {
+        height: 100%;
+        margin: 0;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+    }
+
+    .big-box {
+        width: 100px;
+        height: 115px;
+        left: auto;
+        right: 25px;
+        bottom: 34px;
+        border-width: 3px;
+        box-shadow: 7px 7px 0 #ff5b55;
+    }
+
+    .big-box span {
+        font-size: 65px;
+    }
+
+    .floating-card {
+        padding: 7px 10px;
+        font-size: 10px;
+        box-shadow: 3px 3px 0 #65c5e8;
+    }
+
+    .card-one {
+        display: none;
+    }
+
+    .card-two {
+        right: 132px;
+        bottom: 23px;
+        box-shadow: 3px 3px 0 #ffd84d;
+    }
+
     .auth-panel {
-        min-height: 100vh;
-        padding: 34px 22px;
-        display: flex;
-        background-color: #f7f4ee;
+        min-height: 0;
+        margin-top: -54px;
+        padding: 0 18px 35px;
+        display: block;
+        background-color: transparent;
+        position: relative;
+        z-index: 3;
     }
 
     .auth-form-wrap {
-        padding: 28px 22px;
+        max-width: 430px;
+        margin: auto;
+        padding: 25px 22px 27px;
         background-color: white;
         border: 1px solid #dedbd4;
         border-radius: 24px;
-        box-shadow: 0 16px 40px rgba(23, 25, 31, 0.12);
+        box-shadow: 7px 7px 0 #17191f;
     }
 
     .dark-brand {
-        margin-bottom: 30px;
+        margin-bottom: 22px;
     }
 
     .auth-form-wrap h2 {
         margin-top: 8px;
-        font-size: 34px;
+        font-size: 32px;
+        line-height: 1.05;
+    }
+
+    .auth-form-wrap>.muted {
+        margin-bottom: 20px;
+        font-size: 14px;
     }
 
     .form-group {
@@ -1068,6 +1227,11 @@ footer {
         min-height: 52px;
         border-radius: 13px;
         font-size: 16px;
+    }
+
+    .form-switch {
+        margin-top: 20px;
+        font-size: 14px;
     }
 
     .register-body {
@@ -1200,6 +1364,13 @@ footer {
         margin: 16px 0 25px;
     }
 
+    .daily-draw-panel {
+        margin: 0 0 28px;
+        padding: 16px;
+        border-radius: 15px;
+        box-shadow: 4px 4px 0 #ffd84d;
+    }
+
     .chance-pills span {
         width: calc(50% - 4px);
         padding: 7px 4px;
@@ -1233,6 +1404,18 @@ footer {
         padding: 22px 16px;
         border-radius: 20px;
         box-shadow: 7px 7px 0 #65c5e8;
+    }
+
+    .result-heading {
+        margin-top: 8px;
+        font-size: 21px;
+    }
+
+    .result-image {
+        max-width: 280px;
+        margin-top: 16px;
+        border-width: 3px;
+        border-radius: 14px;
     }
 
     .result-card.rare {

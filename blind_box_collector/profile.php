@@ -127,6 +127,8 @@ $user = mysqli_fetch_assoc($user_result);
                         <option value="Molly" <?php if ($user['favorite_series'] == 'Molly') { echo 'selected'; } ?>>Molly</option>
                         <option value="Skullpanda" <?php if ($user['favorite_series'] == 'Skullpanda') { echo 'selected'; } ?>>Skullpanda</option>
                         <option value="Crybaby" <?php if ($user['favorite_series'] == 'Crybaby') { echo 'selected'; } ?>>Crybaby</option>
+                        <option value="Hacipupu" <?php if ($user['favorite_series'] == 'Hacipupu') { echo 'selected'; } ?>>Hacipupu</option>
+                        <option value="Twinkle Twinkle" <?php if ($user['favorite_series'] == 'Twinkle Twinkle') { echo 'selected'; } ?>>Twinkle Twinkle</option>
                     </select>
                 </div>
 

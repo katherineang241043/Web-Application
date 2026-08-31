@@ -137,15 +137,11 @@ if ($total_characters > 0) {
 
                 <article class="collection-card <?php echo $collection_class; ?>">
                     <div class="card-image" style="background-color: <?php echo htmlspecialchars($character['theme_color']); ?>;">
-                        <span>
-                            <?php
-                            if ($quantity > 0) {
-                                echo strtoupper(substr($character["name"], 0, 1));
-                            } else {
-                                echo "?";
-                            }
-                            ?>
-                        </span>
+                        <?php if ($quantity > 0) { ?>
+                            <img src="images/<?php echo htmlspecialchars($character['image_file']); ?>" alt="<?php echo htmlspecialchars($character['series_name'] . ' - ' . $character['name']); ?>">
+                        <?php } else { ?>
+                            <span>?</span>
+                        <?php } ?>
 
                         <em class="rarity-badge <?php echo $rarity_class; ?>"><?php echo $character["rarity"]; ?></em>
 

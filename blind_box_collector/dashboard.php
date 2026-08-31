@@ -46,17 +46,23 @@ if ($favorite == "") {
     $favorite_display = "Not Set";
     $recommendation = "Complete your profile to receive a personalized series recommendation.";
 } else if ($favorite == "Labubu") {
-    $recommendation = "Hirono: another expressive character with a strong personality.";
+    $recommendation = "HIRONO - My Deepest Secret: another expressive character with a strong personality.";
 } else if ($favorite == "Dimoo") {
-    $recommendation = "Pucky: a dreamy series with soft colours and fantasy themes.";
+    $recommendation = "TWINKLE TWINKLE - Waiting in Snow: a dreamy style with soft colours.";
 } else if ($favorite == "Hirono") {
-    $recommendation = "Skullpanda: a stylish series with emotional storytelling.";
+    $recommendation = "SKULLPANDA - A Dawn Duet: a stylish design with emotional storytelling.";
 } else if ($favorite == "Molly") {
-    $recommendation = "Dimoo: a colourful world filled with imagination.";
+    $recommendation = "HACIPUPU - Make Me Blush: a sweet and colourful character.";
 } else if ($favorite == "Skullpanda") {
-    $recommendation = "Crybaby: bold designs with expressive moods.";
+    $recommendation = "CRYBABY - Shall We Dance: a bold design with an expressive mood.";
+} else if ($favorite == "Crybaby") {
+    $recommendation = "LABUBU - Dive into Love: playful, mischievous, and full of surprises.";
+} else if ($favorite == "Hacipupu") {
+    $recommendation = "MOLLY - My Sweet Trouble: a cute style with a playful personality.";
+} else if ($favorite == "Twinkle Twinkle") {
+    $recommendation = "DIMOO - Whispers of Love: a gentle style filled with imagination.";
 } else {
-    $recommendation = "Labubu: playful, mischievous, and full of surprises.";
+    $recommendation = "LABUBU - Dive into Love: playful, mischievous, and full of surprises.";
 }
 ?>
 <!DOCTYPE html>

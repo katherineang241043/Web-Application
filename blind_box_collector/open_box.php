@@ -22,38 +22,73 @@ mysqli_set_charset($conn, "utf8mb4");
 $user_id = $_SESSION["user_id"];
 $has_result = false;
 $is_duplicate = false;
+$draw_was_free = false;
+$error_message = "";
 $drawn_character = array();
 
+// Count only this user's draws for today's date.
+$today = date("Y-m-d");
+$today_query = "SELECT * FROM draw_history WHERE user_id = '$user_id' AND draw_date = '$today'";
+$today_result = mysqli_query($conn, $today_query);
+$today_draws = mysqli_num_rows($today_result);
+$draws_left = 4 - $today_draws;
+
+if ($draws_left < 0) {
+    $draws_left = 0;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $chance = rand(1, 80);
-
-    if ($chance == 1) {
-        $rarity = "Secret";
-        $character_id = 9;
+    // A user cannot make a fifth draw on the same day.
+    if ($today_draws >= 4) {
+        $error_message = "You have used all 4 draws for today. Come back tomorrow!";
     } else {
-        $rarity = "Common";
-        $character_id = rand(1, 8);
-    }
+        $chance = rand(1, 80);
 
-    $character_query = "SELECT * FROM characters WHERE id = '$character_id'";
-    $character_result = mysqli_query($conn, $character_query);
-
-    if (mysqli_num_rows($character_result) > 0) {
-        $drawn_character = mysqli_fetch_assoc($character_result);
-        $has_result = true;
-
-        $check_query = "SELECT * FROM collection WHERE user_id = '$user_id' AND character_id = '$character_id'";
-        $check_result = mysqli_query($conn, $check_query);
-
-        if (mysqli_num_rows($check_result) > 0) {
-            $is_duplicate = true;
-            $update_query = "UPDATE collection SET quantity = quantity + 1, last_drawn_at = NOW()
-                             WHERE user_id = '$user_id' AND character_id = '$character_id'";
-            mysqli_query($conn, $update_query);
+        if ($chance == 1) {
+            $character_id = 9;
         } else {
-            $insert_query = "INSERT INTO collection (user_id, character_id, quantity)
-                             VALUES ('$user_id', '$character_id', 1)";
-            mysqli_query($conn, $insert_query);
+            $character_id = rand(1, 8);
+        }
+
+        $character_query = "SELECT * FROM characters WHERE id = '$character_id'";
+        $character_result = mysqli_query($conn, $character_query);
+
+        if (mysqli_num_rows($character_result) > 0) {
+            $drawn_character = mysqli_fetch_assoc($character_result);
+
+            // The first draw each day is the Daily Free Draw.
+            $is_free = 0;
+
+            if ($today_draws == 0) {
+                $is_free = 1;
+                $draw_was_free = true;
+            }
+
+            $history_query = "INSERT INTO draw_history (user_id, character_id, draw_date, is_free)
+                              VALUES ('$user_id', '$character_id', '$today', '$is_free')";
+
+            if (mysqli_query($conn, $history_query)) {
+                $has_result = true;
+
+                $check_query = "SELECT * FROM collection WHERE user_id = '$user_id' AND character_id = '$character_id'";
+                $check_result = mysqli_query($conn, $check_query);
+
+                if (mysqli_num_rows($check_result) > 0) {
+                    $is_duplicate = true;
+                    $update_query = "UPDATE collection SET quantity = quantity + 1, last_drawn_at = NOW()
+                                     WHERE user_id = '$user_id' AND character_id = '$character_id'";
+                    mysqli_query($conn, $update_query);
+                } else {
+                    $insert_query = "INSERT INTO collection (user_id, character_id, quantity)
+                                     VALUES ('$user_id', '$character_id', 1)";
+                    mysqli_query($conn, $insert_query);
+                }
+
+                $today_draws = $today_draws + 1;
+                $draws_left = 4 - $today_draws;
+            } else {
+                $error_message = "Unable to save this draw. Please try again.";
+            }
         }
     }
 }
@@ -90,35 +125,80 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <span>Common 79 / 80</span>
                     <span>Secret 1 / 80</span>
                 </div>
+
+                <div class="daily-draw-panel">
+                    <p class="daily-title">🎁 DAILY FREE DRAW</p>
+                    <strong>1 Free Draw Every Day</strong>
+
+                    <div class="draw-counter-row">
+                        <span>Today's Draws</span>
+                        <b><?php echo $today_draws; ?> / 4</b>
+                    </div>
+
+                    <div class="draw-counter-row">
+                        <span>Daily Free Draw</span>
+
+                        <?php if ($today_draws == 0) { ?>
+                            <b class="free-available">Available</b>
+                        <?php } else { ?>
+                            <b class="free-used">Used</b>
+                        <?php } ?>
+                    </div>
+
+                    <?php if ($draws_left == 1) { ?>
+                        <p class="draws-left">1 draw left today</p>
+                    <?php } else { ?>
+                        <p class="draws-left"><?php echo $draws_left; ?> draws left today</p>
+                    <?php } ?>
+                </div>
             </div>
 
             <div class="draw-stage">
+                <?php if ($error_message != "") { ?>
+                    <div class="message warning-message"><?php echo $error_message; ?></div>
+                <?php } ?>
+
                 <?php if ($has_result == false) { ?>
                     <div class="blind-box">
                         <span class="box-question">?</span>
                         <span class="box-label">MYSTERY BOX</span>
                     </div>
 
-                    <form method="POST" action="open_box.php">
-                        <button class="btn btn-primary draw-button" type="submit">Open Blind Box</button>
-                    </form>
+                    <?php if ($draws_left > 0) { ?>
+                        <form method="POST" action="open_box.php">
+                            <button class="btn btn-primary draw-button" type="submit">
+                                <?php if ($today_draws == 0) { ?>Draw Now - Free<?php } else { ?>Open Blind Box<?php } ?>
+                            </button>
+                        </form>
+                    <?php } else { ?>
+                        <button class="btn draw-button disabled-button" type="button" disabled>No Draws Left Today</button>
+                        <div class="message warning-message">You have used all 4 draws for today. Come back tomorrow!</div>
+                    <?php } ?>
 
-                    <p class="tiny-note">A new result is generated every time you open a box.</p>
+                    <p class="tiny-note">Your first draw is free. You can open up to 4 boxes each day.</p>
                 <?php } else { ?>
                     <?php
                     $rarity_class = strtolower($drawn_character["rarity"]);
                     ?>
 
+                    <?php if ($drawn_character["rarity"] == "Secret") { ?>
+                        <p class="result-heading">✨ SECRET!</p>
+                    <?php } else { ?>
+                        <p class="result-heading">🎉 Congratulations!</p>
+                    <?php } ?>
+
                     <div class="result-card <?php echo $rarity_class; ?> reveal-animation">
                         <span class="rarity-badge"><?php echo $drawn_character["rarity"]; ?></span>
 
-                        <div class="character-circle" style="background-color: <?php echo htmlspecialchars($drawn_character['theme_color']); ?>;">
-                            <?php echo strtoupper(substr($drawn_character["name"], 0, 1)); ?>
-                        </div>
+                        <img class="result-image" src="images/<?php echo htmlspecialchars($drawn_character['image_file']); ?>" alt="<?php echo htmlspecialchars($drawn_character['series_name'] . ' - ' . $drawn_character['name']); ?>">
 
                         <p class="series-name"><?php echo htmlspecialchars($drawn_character["series_name"]); ?> SERIES</p>
                         <h2><?php echo htmlspecialchars($drawn_character["name"]); ?></h2>
                         <p><?php echo htmlspecialchars($drawn_character["description"]); ?></p>
+
+                        <?php if ($draw_was_free == true) { ?>
+                            <div class="free-draw-message">🎁 Daily Free Draw Used</div>
+                        <?php } ?>
 
                         <?php if ($is_duplicate == true) { ?>
                             <div class="duplicate-message">Duplicate! Your quantity has increased by 1.</div>
@@ -132,12 +212,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="result-actions">
-                        <form method="POST" action="open_box.php">
-                            <button class="btn btn-primary" type="submit">Open Another</button>
-                        </form>
+                        <?php if ($draws_left > 0) { ?>
+                            <form method="POST" action="open_box.php">
+                                <button class="btn btn-primary" type="submit">Open Another (<?php echo $draws_left; ?> left)</button>
+                            </form>
+                        <?php } else { ?>
+                            <button class="btn disabled-button" type="button" disabled>Daily Limit Reached</button>
+                        <?php } ?>
 
                         <a class="btn btn-outline" href="collection.php">View Collection</a>
                     </div>
+
+                    <?php if ($draws_left == 0) { ?>
+                        <div class="message warning-message result-limit-message">You have used all 4 draws for today. Come back tomorrow!</div>
+                    <?php } ?>
                 <?php } ?>
             </div>
         </section>
