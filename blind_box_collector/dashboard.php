@@ -85,7 +85,7 @@ if ($favorite == "") {
             <a href="open_box.php"><span class="nav-icon">?</span><span class="nav-label">Open</span></a>
             <a href="collection.php"><span class="nav-icon">&#9638;</span><span class="nav-label">Collection</span></a>
             <a href="profile.php"><span class="nav-icon">&#9786;</span><span class="nav-label">Profile</span></a>
-            <a class="logout-link" href="logout.php"><span class="nav-icon">&#8594;</span><span class="nav-label">Logout</span></a>
+            <a class="logout-link" href="logout.php" onclick="return confirm('Are you sure you want to logout?');"><span class="nav-icon">&#8594;</span><span class="nav-label">Logout</span></a>
         </nav>
     </header>
 

@@ -37,7 +37,17 @@ if ($draws_left < 0) {
     $draws_left = 0;
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// Show the last completed draw after redirecting back to this page.
+// Refreshing this GET page only shows the same result and does not draw again.
+if (isset($_GET["result"]) && isset($_SESSION["last_draw_result"])) {
+    $drawn_character = $_SESSION["last_draw_result"];
+    $is_duplicate = $_SESSION["last_draw_duplicate"];
+    $draw_was_free = $_SESSION["last_draw_free"];
+    $has_result = true;
+}
+
+// A draw runs only when the user clicks a button named draw_button.
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["draw_button"])) {
     // user cannot make a fifth draw on the same day.
     if ($today_draws >= 4) {
         $error_message = "You have used all 4 draws for today. Come back tomorrow!";
@@ -86,6 +96,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $today_draws = $today_draws + 1;
                 $draws_left = 4 - $today_draws;
+
+                // Save the result, then redirect to prevent F5 from repeating POST.
+                $_SESSION["last_draw_result"] = $drawn_character;
+                $_SESSION["last_draw_duplicate"] = $is_duplicate;
+                $_SESSION["last_draw_free"] = $draw_was_free;
+
+                header("Location: open_box.php?result=1");
+                exit();
             } else {
                 $error_message = "Unable to save this draw. Please try again.";
             }
@@ -110,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a class="active" href="open_box.php"><span class="nav-icon">?</span><span class="nav-label">Open</span></a>
             <a href="collection.php"><span class="nav-icon">&#9638;</span><span class="nav-label">Collection</span></a>
             <a href="profile.php"><span class="nav-icon">&#9786;</span><span class="nav-label">Profile</span></a>
-            <a class="logout-link" href="logout.php"><span class="nav-icon">&#8594;</span><span class="nav-label">Logout</span></a>
+            <a class="logout-link" href="logout.php" onclick="return confirm('Are you sure you want to logout?');"><span class="nav-icon">&#8594;</span><span class="nav-label">Logout</span></a>
         </nav>
     </header>
 
@@ -166,7 +184,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <?php if ($draws_left > 0) { ?>
                         <form method="POST" action="open_box.php">
-                            <button class="btn btn-primary draw-button" type="submit">
+                            <button class="btn btn-primary draw-button" type="submit" name="draw_button" value="1">
                                 <?php if ($today_draws == 0) { ?>Draw Now - Free<?php } else { ?>Open Blind Box<?php } ?>
                             </button>
                         </form>
@@ -214,7 +232,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="result-actions">
                         <?php if ($draws_left > 0) { ?>
                             <form method="POST" action="open_box.php">
-                                <button class="btn btn-primary" type="submit">Open Another (<?php echo $draws_left; ?> left)</button>
+                                <button class="btn btn-primary" type="submit" name="draw_button" value="1">Open Another (<?php echo $draws_left; ?> left)</button>
                             </form>
                         <?php } else { ?>
                             <button class="btn disabled-button" type="button" disabled>Daily Limit Reached</button>

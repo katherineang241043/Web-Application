@@ -33,6 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($full_name) || empty($email) || empty($phone) || empty($favorite_series) || empty($collecting_purpose)) {
         $error_message = "Please complete all required fields.";
+    } else if (!ctype_digit($phone)) {
+        $error_message = "Phone number must contain numbers only.";
     } else {
         $safe_name = mysqli_real_escape_string($conn, $full_name);
         $safe_email = mysqli_real_escape_string($conn, $email);
@@ -81,7 +83,7 @@ $user = mysqli_fetch_assoc($user_result);
             <a href="open_box.php"><span class="nav-icon">?</span><span class="nav-label">Open</span></a>
             <a href="collection.php"><span class="nav-icon">&#9638;</span><span class="nav-label">Collection</span></a>
             <a class="active" href="profile.php"><span class="nav-icon">&#9786;</span><span class="nav-label">Profile</span></a>
-            <a class="logout-link" href="logout.php"><span class="nav-icon">&#8594;</span><span class="nav-label">Logout</span></a>
+            <a class="logout-link" href="logout.php" onclick="return confirm('Are you sure you want to logout?');"><span class="nav-icon">&#8594;</span><span class="nav-label">Logout</span></a>
         </nav>
     </header>
 
@@ -114,7 +116,7 @@ $user = mysqli_fetch_assoc($user_result);
 
                 <div class="form-group">
                     <label for="phone">Phone Number *</label>
-                    <input id="phone" type="tel" name="phone" value="<?php echo htmlspecialchars($user['phone']); ?>" required>
+                    <input id="phone" type="tel" name="phone" value="<?php echo htmlspecialchars($user['phone']); ?>" inputmode="numeric" pattern="[0-9]+" title="Please enter numbers only." required>
                 </div>
 
                 <div class="form-group">
