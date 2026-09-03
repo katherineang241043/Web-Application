@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 31, 2026 at 04:40 PM
+-- Generation Time: Sep 03, 2026 at 10:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -74,7 +74,16 @@ CREATE TABLE `collection` (
 INSERT INTO `collection` (`id`, `user_id`, `character_id`, `quantity`, `first_drawn_at`, `last_drawn_at`) VALUES
 (15, 1, 7, 2, '2026-08-31 14:32:15', '2026-08-31 14:32:26'),
 (16, 1, 2, 1, '2026-08-31 14:32:20', '2026-08-31 14:32:20'),
-(17, 1, 4, 1, '2026-08-31 14:32:23', '2026-08-31 14:32:23');
+(17, 1, 4, 1, '2026-08-31 14:32:23', '2026-08-31 14:32:23'),
+(18, 4, 5, 2, '2026-09-01 01:48:36', '2026-09-01 01:50:27'),
+(19, 4, 8, 2, '2026-09-01 01:50:18', '2026-09-01 01:50:22'),
+(25, 6, 1, 2, '2026-09-01 02:04:49', '2026-09-01 03:00:30'),
+(38, 6, 4, 1, '2026-09-01 03:00:39', '2026-09-01 03:00:39'),
+(39, 1, 5, 1, '2026-09-01 03:03:14', '2026-09-01 03:03:14'),
+(40, 1, 6, 1, '2026-09-01 03:03:16', '2026-09-01 03:03:16'),
+(41, 11, 8, 2, '2026-09-03 19:59:12', '2026-09-03 19:59:22'),
+(42, 11, 5, 1, '2026-09-03 19:59:29', '2026-09-03 19:59:29'),
+(43, 11, 1, 1, '2026-09-03 19:59:38', '2026-09-03 19:59:38');
 
 -- --------------------------------------------------------
 
@@ -99,7 +108,17 @@ INSERT INTO `draw_history` (`id`, `user_id`, `character_id`, `draw_date`, `is_fr
 (20, 1, 7, '2026-08-31', 1, '2026-08-31 14:32:15'),
 (21, 1, 2, '2026-08-31', 0, '2026-08-31 14:32:20'),
 (22, 1, 4, '2026-08-31', 0, '2026-08-31 14:32:23'),
-(23, 1, 7, '2026-08-31', 0, '2026-08-31 14:32:26');
+(23, 1, 7, '2026-08-31', 0, '2026-08-31 14:32:26'),
+(24, 4, 5, '2026-09-01', 1, '2026-09-01 01:48:36'),
+(36, 6, 1, '2026-09-01', 1, '2026-09-01 02:04:49'),
+(51, 6, 1, '2026-09-01', 0, '2026-09-01 03:00:30'),
+(52, 6, 4, '2026-09-01', 0, '2026-09-01 03:00:39'),
+(53, 1, 5, '2026-09-01', 1, '2026-09-01 03:03:14'),
+(54, 1, 6, '2026-09-01', 0, '2026-09-01 03:03:16'),
+(55, 11, 8, '2026-09-03', 1, '2026-09-03 19:59:12'),
+(56, 11, 8, '2026-09-03', 0, '2026-09-03 19:59:22'),
+(57, 11, 5, '2026-09-03', 0, '2026-09-03 19:59:29'),
+(58, 11, 1, '2026-09-03', 0, '2026-09-03 19:59:38');
 
 -- --------------------------------------------------------
 
@@ -124,7 +143,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `favorite_series`, `favorite_color`, `collecting_purpose`, `created_at`) VALUES
-(1, 'Boo', 'pop@gmail.com', '01123456789', 'pop123', 'Hirono', 'pink', 'Gift', '2026-07-20 16:05:41');
+(1, 'Boo', 'pop@gmail.com', '01123456789', 'pop123', 'Hirono', 'pink', 'Gift', '2026-07-20 16:05:41'),
+(4, 'qwe', 'qwer@gmail.com', 'we!', '123456', 'Labubu', 'Gay', 'Decoration', '2026-09-03 01:48:07'),
+(6, 'k', 'k@gmail.com', 'kkk', 'kkkkkk', 'Dimoo', '', 'Gift', '2026-09-01 02:03:10'),
+(11, 'Leo Tan', 'leo@gmail.com', '0123456789', 'leo123', 'Hirono', 'red', 'Gift', '2026-09-03 19:57:14');
 
 --
 -- Indexes for dumped tables
@@ -173,19 +195,19 @@ ALTER TABLE `characters`
 -- AUTO_INCREMENT for table `collection`
 --
 ALTER TABLE `collection`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `draw_history`
 --
 ALTER TABLE `draw_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
