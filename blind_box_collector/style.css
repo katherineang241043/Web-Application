@@ -1561,3 +1561,22 @@ footer {
         width: calc(50% - 4px);
     }
 }
+
+/* Password show / hide eye */
+.password-box {
+    position: relative;
+}
+
+.password-box input {
+    width: 100%;
+    padding-right: 45px;
+}
+
+.password-eye {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+}
